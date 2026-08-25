@@ -303,6 +303,82 @@ main {
 }
 .welcome-view {
   text-align: center;
+  padding: 27px 32px;
+}
+.drop-head .eyebrow {
+  color: var(--red);
+  margin: 0;
+}
+.drop-head h3 {
+  margin: 7px 0 15px;
+  font-size: 25px;
+}
+.drop-choices {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.drop-choices button {
+  min-width: 0;
+  padding: 9px 7px;
+  border: 1px solid #c4cacf;
+  background: #ffffffa6;
+  color: #171a1d;
+  cursor: pointer;
+}
+.drop-choices button.selected {
+  border-color: var(--red);
+  background: #fff;
+  box-shadow: inset 0 -3px var(--red);
+}
+.drop-choices img {
+  width: 100%;
+  height: 77px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.drop-choices span,
+.drop-choices small {
+  display: block;
+}
+.drop-choices b {
+  font-size: 10px;
+}
+.drop-choices small {
+  margin-top: 3px;
+  color: #7b848a;
+  font: 6px monospace;
+  letter-spacing: 0.08em;
+}
+.size-picker {
+  margin: 13px 0;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+.size-picker > span {
+  font-size: 9px;
+  font-weight: 700;
+}
+.size-picker > div {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+.size-picker button {
+  padding: 7px 2px;
+  border: 1px solid #c4cacf;
+  background: #fff;
+  color: #343a3e;
+  font-size: 9px;
+  cursor: pointer;
+}
+.size-picker button.selected {
+  border-color: #171a1d;
+  background: #171a1d;
+  color: #fff;
 }
 .ticket-preview {
   width: 210px;
@@ -330,6 +406,10 @@ main {
 .unlock-view h3 {
   font: 400 31px/1.2 Georgia;
   margin: 10px 0 22px;
+}
+.welcome-view .drop-head h3 {
+  margin: 7px 0 15px;
+  font-size: 25px;
 }
 .welcome-view ul {
   width: min(430px, 100%);
@@ -554,6 +634,30 @@ main {
   object-fit: contain;
   mix-blend-mode: multiply;
 }
+.reel-drop {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  grid-template-rows: 1fr auto;
+  padding: 5px 8px 11px;
+}
+.reel-drop img {
+  min-height: 0;
+}
+.reel-drop small {
+  font-size: 8px;
+  font-weight: 700;
+}
+.reel-status {
+  max-width: 90%;
+  text-align: center;
+  font: 700 clamp(12px, 2vw, 22px) monospace;
+  color: #606970;
+}
+.reel-status.win {
+  color: #15934a;
+}
 .reel-number,
 .reel-coupon {
   font:
@@ -764,6 +868,28 @@ main {
   background: #ffd66b17;
   color: var(--gold);
 }
+.entry-card {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #ffffff21;
+  background: #ffffff08;
+}
+.entry-card span {
+  color: #7e8991;
+  font: 7px monospace;
+  letter-spacing: 0.14em;
+}
+.entry-card strong {
+  display: block;
+  margin: 7px 0;
+  color: var(--cyan);
+  font: 20px Georgia;
+}
+.entry-card p {
+  margin: 0;
+  color: #9aa3aa;
+  font: 8px monospace;
+}
 .promise {
   display: grid;
   grid-template-columns: 31px 1fr;
@@ -917,6 +1043,16 @@ main {
   margin: 8px 0;
   font: 28px Georgia;
 }
+.draw-result-badge {
+  min-width: 150px;
+  padding: 8px 13px;
+  border: 1px solid currentColor;
+  border-radius: 99px;
+  background: #ffffff9c;
+  font: 700 9px monospace;
+}
+.draw-result-badge.won { color: #178c48; }
+.draw-result-badge.lost { color: #6c757b; }
 .confetti {
   position: absolute;
   inset: 0;
@@ -1068,7 +1204,7 @@ footer {
     min-width: 104px;
   }
   .lever-unit {
-    right: -57px;
+    right: -44px;
     top: -205px;
     width: 64px;
     height: 215px;

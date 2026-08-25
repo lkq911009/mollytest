@@ -7,8 +7,8 @@
       content="width=device-width,initial-scale=1,viewport-fit=cover"
     />
     <meta name="theme-color" content="#07090c" />
-    <meta name="description" content="完成三个球鞋挑战，100%领取优惠券。" />
-    <title>SOLE SIGNAL｜球鞋通关奖励舱</title>
+    <meta name="description" content="选择限量球鞋并提交模拟抽签，完成挑战100%领取优惠券。" />
+    <title>SOLE SIGNAL｜球鞋限量发售抽签</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -21,10 +21,10 @@
     </header>
     <main>
       <section class="intro">
-        <p class="eyebrow">3 LEVELS · GUARANTEED REWARD</p>
-        <h1>答完三题，<br /><em>开启你的奖励舱。</em></h1>
+        <p class="eyebrow">LIMITED DROP · GUARANTEED REWARD</p>
+        <h1>选定你的球鞋，<br /><em>提交限量发售签。</em></h1>
         <p>
-          答错也能继续，完成挑战必得优惠券。正确率决定券面额，机器只负责制造揭晓惊喜。
+          先选择目标鞋款和尺码，再完成三道挑战。抽签决定模拟购买资格，正确率决定保底优惠券。
         </p>
       </section>
 
@@ -46,9 +46,9 @@
           <div class="machine-top">
             <div class="screws"><i></i><i></i><i></i><i></i></div>
             <p>SOLE SIGNAL LAB</p>
-            <h2 id="machineTitle">球鞋通关奖励舱</h2>
+            <h2 id="machineTitle">球鞋限量发售抽签</h2>
             <div class="status">
-              <span id="statusText">INSERT YOUR CURIOSITY</span
+              <span id="statusText">SELECT A DROP · CHOOSE YOUR SIZE</span
               ><b id="machineScore">READY</b>
             </div>
             <div id="charge" class="charge"><i></i><i></i><i></i></div>
@@ -56,19 +56,34 @@
 
           <div class="machine-screen">
             <section id="welcomeView" class="view welcome-view">
-              <div class="ticket-preview">
-                <span>GUARANTEED</span><strong>¥5—¥20</strong
-                ><small>SNEAKER COUPON</small>
+              <div class="drop-head">
+                <p class="eyebrow">SELECT YOUR DROP</p>
+                <h3>选择目标鞋款与尺码</h3>
               </div>
-              <p class="eyebrow">HOW TO PLAY</p>
-              <h3>三道轻量挑战，<br />为奖励舱充满能量。</h3>
-              <ul>
-                <li><b>01</b> 每题三选一，选择后立即揭晓</li>
-                <li><b>02</b> 答错不淘汰，完成挑战保证有奖</li>
-                <li><b>03</b> 三题结束后拉杆，揭晓正确率、幸运鞋和优惠券</li>
-              </ul>
+              <div id="dropChoices" class="drop-choices">
+                <button class="selected" data-shoe="silver">
+                  <img src="assets/shoes/silver.png" alt="银翼未来" />
+                  <span><b>银翼未来</b><small>LIMITED DROP</small></span>
+                </button>
+                <button data-shoe="black">
+                  <img src="assets/shoes/black.png" alt="暗影高帮" />
+                  <span><b>暗影高帮</b><small>COLLECTOR DROP</small></span>
+                </button>
+                <button data-shoe="lime">
+                  <img src="assets/shoes/lime.png" alt="荧光加速" />
+                  <span><b>荧光加速</b><small>SHOCK DROP</small></span>
+                </button>
+              </div>
+              <div class="size-picker">
+                <span>选择尺码</span>
+                <div id="sizeChoices">
+                  <button>38</button><button>39</button
+                  ><button>40</button><button class="selected">41</button
+                  ><button>42</button><button>43</button>
+                </div>
+              </div>
               <button id="startBtn" class="primary">
-                开始闯关 <span>↗</span>
+                锁定鞋款，开始挑战 <span>↗</span>
               </button>
             </section>
 
@@ -99,10 +114,10 @@
                 <span id="unlockPercent">0%</span><small>ACCURACY</small>
               </div>
               <p class="eyebrow">ALL LEVELS CLEARED</p>
-              <h3>奖励档位已经锁定</h3>
+              <h3>签位与保底奖励已准备</h3>
               <p id="unlockCopy"></p>
               <div class="pull-hint">
-                拉下右侧摇杆，开启奖励舱 <span>→</span>
+                拉下右侧摇杆，提交模拟抽签 <span>→</span>
               </div>
             </section>
 
@@ -112,48 +127,53 @@
               </div>
               <div id="reels" class="reels"></div>
               <div class="reel-captions">
-                <span>正确率</span><span>幸运球鞋</span><span>优惠券</span>
+                <span>目标鞋款</span><span>尺码</span><span>签位结果</span>
               </div>
-              <button id="skipBtn" class="skip-btn">跳过动画，直接领奖</button>
+              <button id="skipBtn" class="skip-btn">跳过动画，查看结果</button>
             </section>
           </div>
 
           <div class="machine-console">
             <div class="console-display">
               <small>CURRENT STAGE</small
-              ><strong id="stageDisplay">INTRO</strong>
+              ><strong id="stageDisplay">ENTRY</strong>
             </div>
             <div class="slot-mouth"></div>
             <div class="lever-unit">
               <button
                 id="lever"
                 class="lever locked"
-                aria-label="拉下摇杆开启奖励舱"
+                aria-label="拉下摇杆提交模拟抽签"
               >
                 <span></span><i></i><b></b></button
-              ><em>OPEN REWARD</em>
+              ><em>SUBMIT ENTRY</em>
             </div>
           </div>
         </div>
 
         <aside class="side-panel">
-          <p class="eyebrow">REWARD RULES</p>
-          <h3>答题决定额度，<br />奖励舱负责揭晓。</h3>
+          <p class="eyebrow">DRAW RULES</p>
+          <h3>抽签决定资格，<br />答题锁定保底券。</h3>
           <div id="tiers" class="tiers">
             <div data-min="0"><span>0 题</span><strong>¥5</strong></div>
             <div data-min="1"><span>1 题</span><strong>¥8</strong></div>
             <div data-min="2"><span>2 题</span><strong>¥12</strong></div>
             <div data-min="3"><span>全对</span><strong>¥20</strong></div>
           </div>
+          <div class="entry-card">
+            <span>YOUR ENTRY</span>
+            <strong id="entryShoeName">银翼未来</strong>
+            <p>SIZE <b id="entrySize">41</b> · ONE ENTRY</p>
+          </div>
           <div class="promise">
             <i>✓</i>
             <p>
               <strong>保证有奖</strong
-              ><br />没有二次随机，摇杆不会改变已经锁定的券额。
+              ><br />无论是否中签，都能获得与正确率对应的优惠券。
             </p>
           </div>
           <p id="claimNote" class="fineprint">
-            体验版优惠券仅作交互展示。正式活动需接入会员系统，并限制每个账号首次成绩发券。
+            本页面为模拟抽签，不代表真实库存或购买资格。正式活动必须由后端统一开奖并校验账号、尺码与库存。
           </p>
         </aside>
       </section>
@@ -162,7 +182,7 @@
         <div class="confetti" aria-hidden="true"></div>
         <div class="coupon-result">
           <p class="eyebrow" id="couponRarity">CHALLENGE COMPLETE</p>
-          <h2>恭喜通关！</h2>
+          <h2 id="resultTitle">抽签结果</h2>
           <p id="resultSummary"></p>
           <div class="coupon">
             <div class="coupon-left">
@@ -184,10 +204,11 @@
           >
         </div>
         <div class="result-shoe">
-          <img id="rewardShoe" alt="你的幸运球鞋" /><span
-            >YOUR LUCKY SNEAKER</span
+          <img id="rewardShoe" alt="你选择的目标球鞋" /><span
+            >YOUR SELECTED DROP</span
           >
           <h3 id="rewardShoeName"></h3>
+          <b id="drawResultBadge" class="draw-result-badge">ENTRY PENDING</b>
         </div>
       </section>
     </main>

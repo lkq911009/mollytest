@@ -24,28 +24,13 @@ const questions = [
     why: "轮换穿着能给鞋内散湿和中底材料恢复的时间，也更利于延长寿命。",
   },
 ];
-const rewardShoes = [
-  "cream",
-  "sand",
-  "lilac",
-  "olive",
-  "silver",
-  "cobalt",
-  "orange",
-  "black",
-  "lime",
+const drops = [
+  { id: "silver", name: "银翼未来" },
+  { id: "black", name: "暗影高帮" },
+  { id: "lime", name: "荧光加速" },
 ];
-const shoeNames = [
-  "纯白低帮",
-  "沙丘经典",
-  "紫雾复古",
-  "苔原漫游",
-  "银翼未来",
-  "钴蓝脉冲",
-  "烈焰街头",
-  "暗影高帮",
-  "荧光加速",
-];
+const sizes = [38, 39, 40, 41, 42, 43];
+const drawStates = ["PENDING", "GOT ’EM", "NOT THIS TIME"];
 const accuracyValues = [0, 33, 67, 100];
 const couponValues = [5, 8, 12, 20];
 const $ = (s) => document.querySelector(s);
@@ -59,8 +44,14 @@ let step = 0,
   soundOn = true;
 let timers = [],
   stops = [],
-  finalShoe = 0,
+  selectedDrop = 0,
+  selectedSize = 3,
+  drawWon = false,
   entertainmentMode = false;
+
+try {
+  entertainmentMode = Boolean(localStorage.getItem("soleSignalClaim"));
+} catch {}
 
 function shoePath(id) {
   return `assets/shoes/${id}.png`;
@@ -70,6 +61,13 @@ function couponFor(n) {
 }
 function accuracyFor(n) {
   return accuracyValues[n];
+}
+function wrap(index, length) {
+  return ((index % length) + length) % length;
+}
+function updateEntry() {
+  $("#entryShoeName").textContent = drops[selectedDrop].name;
+  $("#entrySize").textContent = sizes[selectedSize];
 }
 function showView(id) {
   document.querySelectorAll(".view").forEach((v) => v.classList.add("hidden"));
@@ -118,6 +116,7 @@ function renderMap() {
   document
     .querySelectorAll("#charge i")
     .forEach((x, i) => x.classList.toggle("on", i < answers.length));
+  updateEntry();
 }
 
 function start() {
@@ -129,6 +128,7 @@ function start() {
   machine.classList.remove("reward");
   $("#couponPanel").classList.add("hidden");
   $("#machineTitle").textContent = "球鞋知识挑战";
+  $("#statusText").textContent = "ENTRY LOCKED · START CHALLENGE";
   $("#stageDisplay").textContent = "LEVEL 01";
   renderQuestion();
   renderMap();
@@ -196,9 +196,9 @@ function unlock() {
     value = couponFor(score);
   $("#unlockPercent").textContent = `${pct}%`;
   $("#unlockCopy").textContent =
-    `你答对了 ${score} 题，¥${value} 优惠券已经锁定。摇杆只负责揭晓，不会改变券额。`;
-  $("#machineTitle").textContent = "通关奖励舱";
-  $("#statusText").textContent = "REWARD LOCKED · OPEN THE CHAMBER";
+    `目标：${drops[selectedDrop].name}，尺码 ${sizes[selectedSize]}。¥${value} 保底优惠券已经锁定，抽签结果不会改变券额。`;
+  $("#machineTitle").textContent = "限量发售抽签舱";
+  $("#statusText").textContent = "ENTRY READY · SUBMIT THE DRAW";
   $("#machineScore").textContent = `¥${value} LOCKED`;
   $("#stageDisplay").textContent = "REVEAL";
   lever.classList.remove("locked");
@@ -207,11 +207,14 @@ function unlock() {
 }
 
 function reelCell(col, index) {
-  if (col === 0)
-    return `<div class="reel-number">${accuracyValues[(index + 4) % 4]}%</div>`;
+  if (col === 0) {
+    const drop = drops[wrap(index, drops.length)];
+    return `<div class="reel-drop"><img src="${shoePath(drop.id)}" alt=""><small>${drop.name}</small></div>`;
+  }
   if (col === 1)
-    return `<img src="${shoePath(rewardShoes[(index + 9) % 9])}" alt="">`;
-  return `<div class="reel-coupon">¥${couponValues[(index + 4) % 4]}</div>`;
+    return `<div class="reel-number">${sizes[wrap(index, sizes.length)]}</div>`;
+  const state = drawStates[wrap(index, drawStates.length)];
+  return `<div class="reel-status ${state === "GOT ’EM" ? "win" : ""}">${state}</div>`;
 }
 function setReel(col, center) {
   const track = document.querySelector(`[data-reel="${col}"] .reel-items`);
@@ -219,7 +222,7 @@ function setReel(col, center) {
     .map((off) => `<div class="reel-item">${reelCell(col, center + off)}</div>`)
     .join("");
 }
-function renderReels(indices = [0, 4, 0]) {
+function renderReels(indices = [0, 3, 0]) {
   $("#reels").innerHTML = indices
     .map(
       (n, col) =>
@@ -240,10 +243,10 @@ function spin() {
   showView("#reelView");
   renderReels();
   lever.classList.add("pulled");
-  $("#statusText").textContent = "REVEALING YOUR LOCKED REWARD...";
-  finalShoe = Math.min(8, score * 2 + Math.floor(Math.random() * 3));
-  const current = [0, 4, 0],
-    targets = [score, finalShoe, score];
+  $("#statusText").textContent = "VALIDATING ENTRY · DRAWING...";
+  drawWon = Math.random() < 0.25;
+  const current = [0, 0, 0],
+    targets = [selectedDrop, selectedSize, drawWon ? 1 : 2];
   document
     .querySelectorAll(".reel")
     .forEach((x) => x.classList.add("spinning"));
@@ -270,7 +273,7 @@ function stopReel(col, target) {
 function skipSpin() {
   if (!spinning) return;
   clearSpin();
-  [score, finalShoe, score].forEach((target, col) => {
+  [selectedDrop, selectedSize, drawWon ? 1 : 2].forEach((target, col) => {
     const reel = document.querySelector(`[data-reel="${col}"]`);
     reel.classList.remove("spinning");
     setReel(col, target);
@@ -289,25 +292,39 @@ function showCoupon() {
   try {
     saved = JSON.parse(localStorage.getItem("soleSignalClaim"));
   } catch {}
-  const code =
-    saved?.code ||
-    `SOLE${value}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+  if (saved) entertainmentMode = true;
+  const code = `SOLE${value}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
   if (!saved && !entertainmentMode) {
-    saved = { value, code, score, date: new Date().toISOString() };
+    saved = {
+      value,
+      code,
+      score,
+      shoe: drops[selectedDrop].id,
+      size: sizes[selectedSize],
+      drawWon,
+      date: new Date().toISOString(),
+    };
     localStorage.setItem("soleSignalClaim", JSON.stringify(saved));
   }
-  $("#couponValue").textContent = saved?.value ?? value;
-  $("#couponCode").textContent = saved?.code ?? code;
-  $("#resultSummary").textContent = entertainmentMode
-    ? `娱乐模式成绩：正确率 ${pct}% · 本次不重复发券`
-    : `正确率 ${pct}% · 答对 ${score}/3 题 · 优惠券 100% 到手`;
-  $("#couponRarity").textContent =
-    score === 3
-      ? "★ PERFECT CLEAR · MAX REWARD"
-      : "CHALLENGE COMPLETE · REWARD CLAIMED";
-  $("#rewardShoe").src = shoePath(rewardShoes[finalShoe]);
-  $("#rewardShoeName").textContent = shoeNames[finalShoe];
-  $("#statusText").textContent = "REWARD CHAMBER OPENED";
+  $("#couponValue").textContent = entertainmentMode ? value : saved.value;
+  $("#couponCode").textContent = entertainmentMode
+    ? `DEMO-${value}-${code.slice(-5)}`
+    : saved.code;
+  const modeCopy = entertainmentMode ? " · 娱乐模式不重复发券" : "";
+  $("#resultSummary").textContent = drawWon
+    ? `${drops[selectedDrop].name} ${sizes[selectedSize]} 码模拟中签 · ¥${value} 优惠券同时到账${modeCopy}`
+    : `本次未获得模拟购买资格 · ¥${value} 保底优惠券已经到账${modeCopy}`;
+  $("#couponRarity").textContent = drawWon
+    ? "GOT ’EM · PURCHASE ACCESS"
+    : "NOT THIS TIME · COUPON SECURED";
+  $("#resultTitle").textContent = drawWon ? "模拟中签！" : "保底奖励已到账";
+  $("#rewardShoe").src = shoePath(drops[selectedDrop].id);
+  $("#rewardShoeName").textContent = `${drops[selectedDrop].name} · ${sizes[selectedSize]} 码`;
+  $("#drawResultBadge").textContent = drawWon
+    ? "GOT ’EM · 模拟购买资格"
+    : "NOT THIS TIME · 本次未中签";
+  $("#drawResultBadge").className = `draw-result-badge ${drawWon ? "won" : "lost"}`;
+  $("#statusText").textContent = "DRAW COMPLETE · COUPON SECURED";
   $("#stageDisplay").textContent = "CLEARED";
   lever.classList.add("locked");
   $("#couponPanel").classList.remove("hidden");
@@ -324,13 +341,45 @@ $("#startBtn").onclick = start;
 $("#nextBtn").onclick = next;
 lever.onclick = spin;
 $("#skipBtn").onclick = skipSpin;
+document.querySelectorAll("#dropChoices button").forEach((button, index) => {
+  button.onclick = () => {
+    selectedDrop = index;
+    document
+      .querySelectorAll("#dropChoices button")
+      .forEach((item) => item.classList.toggle("selected", item === button));
+    updateEntry();
+    beep(360, 0.08);
+  };
+});
+document.querySelectorAll("#sizeChoices button").forEach((button, index) => {
+  button.onclick = () => {
+    selectedSize = index;
+    document
+      .querySelectorAll("#sizeChoices button")
+      .forEach((item) => item.classList.toggle("selected", item === button));
+    updateEntry();
+    beep(410, 0.06);
+  };
+});
 $("#replayBtn").onclick = () => {
   entertainmentMode = Boolean(localStorage.getItem("soleSignalClaim"));
   $("#claimNote").textContent = entertainmentMode
     ? "娱乐模式：首次奖励已经锁定，本次成绩不会再次生成优惠券。"
     : $("#claimNote").textContent;
+  phase = "intro";
+  score = 0;
+  step = 0;
+  answers = [];
+  machine.classList.remove("reward");
+  lever.classList.add("locked");
+  $("#couponPanel").classList.add("hidden");
+  $("#machineTitle").textContent = "球鞋限量发售抽签";
+  $("#statusText").textContent = "SELECT A DROP · CHOOSE YOUR SIZE";
+  $("#machineScore").textContent = "READY";
+  $("#stageDisplay").textContent = "ENTRY";
+  showView("#welcomeView");
+  renderMap();
   window.scrollTo({ top: $(".journey").offsetTop - 15, behavior: "smooth" });
-  setTimeout(start, 350);
 };
 $("#copyBtn").onclick = () =>
   navigator.clipboard.writeText($("#couponCode").textContent).then(() => {
@@ -338,6 +387,11 @@ $("#copyBtn").onclick = () =>
     toast.classList.add("show");
     setTimeout(() => toast.classList.remove("show"), 1600);
   });
+
+if (entertainmentMode) {
+  $("#claimNote").textContent =
+    "娱乐模式：首次奖励已经锁定，本局只展示模拟券，不会再次发券。";
+}
 $("#soundBtn").onclick = () => {
   soundOn = !soundOn;
   $("#soundBtn").textContent = soundOn ? "SOUND ON" : "SOUND OFF";
