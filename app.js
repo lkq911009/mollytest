@@ -25,9 +25,10 @@ const questions = [
   },
 ];
 const drops = [
-  { id: "forest-72", name: "林地 72" },
-  { id: "cobalt-court", name: "钴蓝室内" },
-  { id: "tangerine-run", name: "橘焰竞速" },
+  { id: "silver-ribbon", name: "银缎丝带", image: "drop-silver.jpg" },
+  { id: "red-suede", name: "赤红麂皮", image: "drop-red.jpg" },
+  { id: "woven-cream", name: "奶油编织", image: "drop-woven.jpg" },
+  { id: "white-navy", name: "白蓝复古", image: "drop-white-blue.jpg" },
 ];
 const sizes = [34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46];
 const drawStates = ["PENDING", "GOT ’EM", "NOT THIS TIME"];
@@ -55,6 +56,9 @@ try {
 
 function shoePath(id) {
   return `assets/shoes/${id}.png`;
+}
+function dropPath(drop) {
+  return `assets/shoes/${drop.image}`;
 }
 function couponFor(n) {
   return couponValues[n];
@@ -138,7 +142,6 @@ function renderQuestion() {
   showView("#questionView");
   $("#questionLevel").textContent = `LEVEL 0${step + 1} / 03`;
   $("#questionType").textContent = q.type;
-  $("#questionImage").src = shoePath(q.shoe);
   $("#questionText").textContent = q.q;
   $("#answers").innerHTML = q.answers
     .map(
@@ -209,7 +212,7 @@ function unlock() {
 function reelCell(col, index) {
   if (col === 0) {
     const drop = drops[wrap(index, drops.length)];
-    return `<div class="reel-drop"><img src="${shoePath(drop.id)}" alt=""><small>${drop.name}</small></div>`;
+    return `<div class="reel-drop"><img src="${dropPath(drop)}" alt=""><small>${drop.name}</small></div>`;
   }
   if (col === 1)
     return `<div class="reel-number">${sizes[wrap(index, sizes.length)]}</div>`;
@@ -318,7 +321,7 @@ function showCoupon() {
     ? "GOT ’EM · PURCHASE ACCESS"
     : "NOT THIS TIME · COUPON SECURED";
   $("#resultTitle").textContent = drawWon ? "模拟中签！" : "保底奖励已到账";
-  $("#rewardShoe").src = shoePath(drops[selectedDrop].id);
+  $("#rewardShoe").src = dropPath(drops[selectedDrop]);
   $("#rewardShoeName").textContent = `${drops[selectedDrop].name} · ${sizes[selectedSize]} 码`;
   $("#drawResultBadge").textContent = drawWon
     ? "GOT ’EM · 模拟购买资格"

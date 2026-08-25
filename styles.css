@@ -14,11 +14,12 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
-  color: #fff;
+  color: #15372d;
   background:
-    radial-gradient(circle at 13% 12%, #ff7b25 0, transparent 27%),
-    radial-gradient(circle at 88% 28%, #2f66ff 0, transparent 31%),
-    linear-gradient(145deg, #0b6145, #08372a 52%, #f15a24 145%);
+    radial-gradient(circle at 8% 14%, #ff9d76 0, transparent 27%),
+    radial-gradient(circle at 91% 25%, #89b9ff 0, transparent 31%),
+    radial-gradient(circle at 55% 88%, #d8ff72 0, transparent 28%),
+    linear-gradient(145deg, #fff5db, #f9ffe8 50%, #d8f5ef);
   font-family: Arial, "PingFang SC", sans-serif;
 }
 button {
@@ -32,7 +33,7 @@ button {
   position: fixed;
   border-radius: 50%;
   filter: blur(100px);
-  opacity: 0.18;
+  opacity: 0.3;
   pointer-events: none;
 }
 .a1 {
@@ -55,10 +56,10 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #ffffff20;
+  border-bottom: 1px solid #15372d24;
 }
 .brand {
-  color: white;
+  color: #15372d;
   text-decoration: none;
   font-weight: 900;
   font-size: 18px;
@@ -86,7 +87,7 @@ header {
 }
 .pill {
   padding: 8px 12px;
-  border: 1px solid #ffffff35;
+  border: 1px solid #15372d45;
   border-radius: 99px;
   background: transparent;
   cursor: pointer;
@@ -100,7 +101,7 @@ main {
   padding: 60px 0 32px;
 }
 .intro .eyebrow {
-  color: var(--cyan);
+  color: #006c50;
 }
 .intro h1 {
   margin: 14px 0;
@@ -111,12 +112,12 @@ main {
 }
 .intro h1 em {
   font-style: italic;
-  color: #b9c2c9;
+  color: #376d60;
 }
 .intro > p:last-child {
   max-width: 620px;
   margin: 22px auto 0;
-  color: #aeb6bd;
+  color: #42645c;
   font-size: 13px;
   line-height: 1.8;
 }
@@ -128,12 +129,12 @@ main {
   display: flex;
   justify-content: space-between;
   margin-bottom: 13px;
-  color: #a9b2b9;
+  color: #526e67;
   font-size: 9px;
   letter-spacing: 0.13em;
 }
 .journey-head b {
-  color: white;
+  color: #15372d;
 }
 .level-map {
   display: grid;
@@ -146,9 +147,9 @@ main {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid #ffffff24;
-  background: #ffffff0b;
-  color: #7b858e;
+  border: 1px solid #15372d28;
+  background: #ffffff6e;
+  color: #547068;
   transition: 0.25s;
 }
 .level-node b {
@@ -313,12 +314,12 @@ main {
 }
 .drop-choices {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
 .drop-choices button {
   min-width: 0;
-  padding: 9px 7px;
+  padding: 7px;
   border: 1px solid #c4cacf;
   background: #ffffffa6;
   color: #171a1d;
@@ -331,9 +332,9 @@ main {
 }
 .drop-choices img {
   width: 100%;
-  height: 116px;
-  object-fit: contain;
-  mix-blend-mode: multiply;
+  height: 126px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 .drop-choices span,
 .drop-choices small {
@@ -436,7 +437,7 @@ main {
   cursor: pointer;
 }
 .question-view {
-  padding: 30px 38px;
+  padding: 66px 38px 30px;
 }
 .question-meta {
   display: flex;
@@ -448,19 +449,8 @@ main {
 .question-meta span {
   color: var(--red);
 }
-.question-visual {
-  width: 150px;
-  height: 110px;
-  margin: 4px auto 3px;
-}
-.question-visual img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  mix-blend-mode: multiply;
-}
 .question-view h3 {
-  margin: 4px 0 18px;
+  margin: 26px 0 28px;
   text-align: center;
   font: 400 25px/1.3 Georgia;
 }
@@ -833,7 +823,11 @@ main {
   font-style: normal;
 }
 .side-panel {
-  padding: 28px 0 28px 27px;
+  padding: 28px 22px;
+  border: 1px solid #15372d1c;
+  border-radius: 18px;
+  background: #ffffff8c;
+  box-shadow: 0 18px 45px #5d77562b;
 }
 .side-panel .eyebrow {
   color: var(--gold);
@@ -848,15 +842,15 @@ main {
 }
 .tiers > div {
   padding: 10px 13px;
-  border: 1px solid #ffffff21;
-  background: #ffffff0b;
+  border: 1px solid #15372d20;
+  background: #ffffff99;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 .tiers span {
   font-size: 10px;
-  color: #9099a1;
+  color: #5d746d;
 }
 .tiers strong {
   font: 20px Georgia;
@@ -869,8 +863,8 @@ main {
 .entry-card {
   margin-top: 18px;
   padding: 14px;
-  border: 1px solid #ffffff21;
-  background: #ffffff08;
+  border: 1px solid #15372d20;
+  background: #eaffb6;
 }
 .entry-card span {
   color: #7e8991;
@@ -880,7 +874,7 @@ main {
 .entry-card strong {
   display: block;
   margin: 7px 0;
-  color: var(--cyan);
+  color: #006c50;
   font: 20px Georgia;
 }
 .entry-card p {
@@ -894,7 +888,7 @@ main {
   gap: 10px;
   margin-top: 22px;
   padding-top: 20px;
-  border-top: 1px solid #ffffff20;
+  border-top: 1px solid #15372d20;
 }
 .promise i {
   width: 29px;
@@ -908,16 +902,16 @@ main {
 }
 .promise p {
   margin: 0;
-  color: #8f989f;
+  color: #536c65;
   font-size: 10px;
   line-height: 1.6;
 }
 .promise strong {
-  color: white;
+  color: #15372d;
 }
 .fineprint {
   margin-top: 20px;
-  color: #656e75;
+  color: #637770;
   font-size: 8px;
   line-height: 1.6;
 }
@@ -1092,8 +1086,8 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid #ffffff1f;
-  color: #6e7780;
+  border-top: 1px solid #15372d20;
+  color: #5a7069;
   font-size: 8px;
   letter-spacing: 0.15em;
 }
@@ -1105,7 +1099,7 @@ footer {
     margin-right: 65px;
   }
   .side-panel {
-    padding: 35px 0;
+    padding: 28px;
   }
   .tiers {
     grid-template-columns: repeat(4, 1fr);
@@ -1166,11 +1160,17 @@ footer {
     min-height: 490px;
     padding: 27px 19px;
   }
-  .question-view {
-    padding: 24px 16px;
+  .welcome-view {
+    min-height: 650px;
   }
-  .question-visual {
-    height: 100px;
+  .drop-choices {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .drop-choices img {
+    height: 150px;
+  }
+  .question-view {
+    padding: 52px 16px 24px;
   }
   .question-view h3 {
     font-size: 22px;
