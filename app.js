@@ -25,11 +25,11 @@ const questions = [
   },
 ];
 const drops = [
-  { id: "silver", name: "银翼未来" },
-  { id: "black", name: "暗影高帮" },
-  { id: "lime", name: "荧光加速" },
+  { id: "forest-72", name: "林地 72" },
+  { id: "cobalt-court", name: "钴蓝室内" },
+  { id: "tangerine-run", name: "橘焰竞速" },
 ];
-const sizes = [38, 39, 40, 41, 42, 43];
+const sizes = [34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46];
 const drawStates = ["PENDING", "GOT ’EM", "NOT THIS TIME"];
 const accuracyValues = [0, 33, 67, 100];
 const couponValues = [5, 8, 12, 20];
@@ -45,7 +45,7 @@ let step = 0,
 let timers = [],
   stops = [],
   selectedDrop = 0,
-  selectedSize = 3,
+  selectedSize = 7,
   drawWon = false,
   entertainmentMode = false;
 

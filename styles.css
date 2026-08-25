@@ -1,8 +1,8 @@
 :root {
-  --ink: #111417;
-  --red: #ff3d27;
-  --cyan: #80dcf5;
-  --gold: #ffd66b;
+  --ink: #123b2d;
+  --red: #ff5a1f;
+  --cyan: #39e3a0;
+  --gold: #ffe052;
 }
 * {
   box-sizing: border-box;
@@ -15,12 +15,10 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   color: #fff;
-  background: radial-gradient(
-    circle at 50% 18%,
-    #273642,
-    #11171e 38%,
-    #07090c 72%
-  );
+  background:
+    radial-gradient(circle at 13% 12%, #ff7b25 0, transparent 27%),
+    radial-gradient(circle at 88% 28%, #2f66ff 0, transparent 31%),
+    linear-gradient(145deg, #0b6145, #08372a 52%, #f15a24 145%);
   font-family: Arial, "PingFang SC", sans-serif;
 }
 button {
@@ -42,14 +40,14 @@ button {
   height: 420px;
   left: -200px;
   top: 28%;
-  background: #6cc7ec;
+  background: #45f0a6;
 }
 .a2 {
   width: 360px;
   height: 360px;
   right: -160px;
   bottom: 4%;
-  background: #ff5038;
+  background: #ffcf32;
 }
 header {
   height: 70px;
@@ -294,7 +292,7 @@ main {
   margin: 0 27px;
   overflow: hidden;
   border-inline: 4px solid #747b80;
-  background: linear-gradient(145deg, #f8fafb, #dfe4e7);
+  background: linear-gradient(145deg, #fffbe8, #dff8d5 58%, #ffd77b);
 }
 .view {
   min-height: 465px;
@@ -328,12 +326,12 @@ main {
 }
 .drop-choices button.selected {
   border-color: var(--red);
-  background: #fff;
+  background: #fff9d7;
   box-shadow: inset 0 -3px var(--red);
 }
 .drop-choices img {
   width: 100%;
-  height: 77px;
+  height: 116px;
   object-fit: contain;
   mix-blend-mode: multiply;
 }
@@ -364,7 +362,7 @@ main {
 }
 .size-picker > div {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: 4px;
 }
 .size-picker button {
@@ -629,8 +627,8 @@ main {
   overflow: hidden;
 }
 .reel-item img {
-  width: 100%;
-  height: 100%;
+  width: 122%;
+  height: 122%;
   object-fit: contain;
   mix-blend-mode: multiply;
 }
@@ -838,7 +836,7 @@ main {
   padding: 28px 0 28px 27px;
 }
 .side-panel .eyebrow {
-  color: var(--cyan);
+  color: var(--gold);
 }
 .side-panel h3 {
   font: 400 24px/1.3 Georgia;
