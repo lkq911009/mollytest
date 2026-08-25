@@ -1,24 +1,352 @@
-const questions=[
- {type:"MATERIAL / 材质关",shoe:"cream",q:"日常白色皮革球鞋，最适合用哪种方式清洁？",answers:["直接放进洗衣机强洗","软布蘸中性清洁剂轻擦","用热水长时间浸泡"],correct:1,why:"中性清洁剂配合软布更温和，可以减少皮面开裂和变形。"},
- {type:"FIT / 尺码关",shoe:"silver",q:"下午试穿球鞋通常比清晨更合理，为什么？",answers:["下午脚部会轻微膨胀","下午鞋底会自动变软","下午鞋码会变小"],correct:0,why:"活动一天后脚部通常会轻微膨胀，此时试穿更接近日常真实状态。"},
- {type:"ROTATION / 轮换关",shoe:"olive",q:"为什么不建议连续很多天只穿同一双运动鞋？",answers:["颜色会自动变深","鞋底必须每天换方向","需要时间散湿并恢复缓震"],correct:2,why:"轮换穿着能给鞋内散湿和中底材料恢复的时间，也更利于延长寿命。"},
- {type:"STYLE / 搭配关",shoe:"orange",q:"厚底、强撞色球鞋作为造型重点时，其他单品怎么搭更稳？",answers:["继续叠加所有高饱和颜色","保持主体相对简洁","必须只穿同色套装"],correct:1,why:"让其余单品相对简洁，可以保留视觉焦点，也不会让整体显得过度拥挤。"},
- {type:"STORAGE / 收纳关",shoe:"black",q:"球鞋长期收纳时，下面哪种做法更合适？",answers:["清洁干燥后避光通风存放","密封前让鞋保持潮湿","长期暴晒防止发霉"],correct:0,why:"先清洁并彻底干燥，再避光、通风存放，可以减少发霉、氧化和材料老化。"}
+const questions = [
+  {
+    type: "MATERIAL / 材质关",
+    shoe: "cream",
+    q: "日常白色皮革球鞋，最适合用哪种方式清洁？",
+    answers: ["直接放进洗衣机强洗", "软布蘸中性清洁剂轻擦", "用热水长时间浸泡"],
+    correct: 1,
+    why: "中性清洁剂配合软布更温和，可以减少皮面开裂和变形。",
+  },
+  {
+    type: "FIT / 尺码关",
+    shoe: "silver",
+    q: "下午试穿球鞋通常比清晨更合理，为什么？",
+    answers: ["下午脚部会轻微膨胀", "下午鞋底会自动变软", "下午鞋码会变小"],
+    correct: 0,
+    why: "活动一天后脚部通常会轻微膨胀，此时试穿更接近日常真实状态。",
+  },
+  {
+    type: "ROTATION / 轮换关",
+    shoe: "olive",
+    q: "为什么不建议连续很多天只穿同一双运动鞋？",
+    answers: ["颜色会自动变深", "鞋底必须每天换方向", "需要时间散湿并恢复缓震"],
+    correct: 2,
+    why: "轮换穿着能给鞋内散湿和中底材料恢复的时间，也更利于延长寿命。",
+  },
 ];
-const rewardShoes=["cream","sand","lilac","olive","silver","cobalt","orange","black","lime"],shoeNames=["纯白低帮","沙丘经典","紫雾复古","苔原漫游","银翼未来","钴蓝脉冲","烈焰街头","暗影高帮","荧光加速"];
-const $=s=>document.querySelector(s),machine=$("#machine"),lever=$("#lever");let step=0,score=0,answers=[],phase="intro",spinning=false,soundOn=true,timers=[];
-function shoePath(id){return `assets/shoes/${id}.png`}
-function couponFor(n){return n===5?20:n===4?16:n===3?12:n===2?8:5}
-function renderMap(){const map=$("#levelMap");map.innerHTML=questions.map((_,i)=>{let c="";if(i===step&&phase==="quiz")c="active";if(answers[i]===true)c="correct";if(answers[i]===false)c="wrong";return `<div class="level-node ${c}"><b>${answers[i]===true?"✓":answers[i]===false?"×":`0${i+1}`}</b><span>LEVEL</span></div>`}).join("");$("#scoreLabel").textContent=`正确 ${score} / 5`;$("#journeyLabel").textContent=phase==="intro"?"挑战尚未开始":phase==="quiz"?`正在挑战第 ${step+1} 关`:phase==="unlock"?"五关完成 · 奖励已解锁":"优惠券已经领取";document.querySelectorAll("#tiers>div").forEach(x=>x.classList.toggle("active",Number(x.dataset.min)===Math.min(score,5)))}
-function showView(id){document.querySelectorAll(".view").forEach(v=>v.classList.add("hidden"));$(id).classList.remove("hidden")}
-function beep(freq=220,d=.07){if(!soundOn)return;try{const c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.frequency.value=freq;g.gain.setValueAtTime(.04,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d)}catch(e){}}
-function start(){phase="quiz";step=0;score=0;answers=[];lever.classList.add("locked");machine.classList.remove("reward");$("#couponPanel").classList.add("hidden");$("#machineTitle").textContent="球鞋知识挑战";$("#stageDisplay").textContent="LEVEL 01";renderQuestion();renderMap()}
-function renderQuestion(){const q=questions[step];showView("#questionView");$("#questionLevel").textContent=`LEVEL 0${step+1} / 05`;$("#questionType").textContent=q.type;$("#questionImage").src=shoePath(q.shoe);$("#questionText").textContent=q.q;$("#answers").innerHTML=q.answers.map((a,i)=>`<button data-i="${i}"><b>${String.fromCharCode(65+i)}</b><span>${a}</span><i>↗</i></button>`).join("");$("#feedback").classList.add("hidden");$("#statusText").textContent=`LEVEL 0${step+1} · CHOOSE ONE`;$("#machineScore").textContent=`${score} CORRECT`;$("#stageDisplay").textContent=`LEVEL 0${step+1}`;document.querySelectorAll("#answers button").forEach(b=>b.onclick=()=>answer(Number(b.dataset.i)));renderMap()}
-function answer(choice){if(answers[step]!==undefined)return;const q=questions[step],ok=choice===q.correct;answers[step]=ok;if(ok)score++;document.querySelectorAll("#answers button").forEach((b,i)=>{b.disabled=true;if(i===q.correct)b.classList.add("correct");else if(i===choice)b.classList.add("wrong")});$("#feedbackIcon").textContent=ok?"✓":"×";$("#feedbackIcon").style.color=ok?"#26a957":"#e54e39";$("#feedbackTitle").textContent=ok?"回答正确 · 奖励升级":"差一点 · 继续闯关";$("#feedbackText").textContent=q.why;$("#nextBtn").innerHTML=step===4?'完成挑战 <span>→</span>':'下一关 <span>→</span>';$("#feedback").classList.remove("hidden");$("#statusText").textContent=ok?"CORRECT · COUPON UPGRADED":"KEEP GOING · REWARD GUARANTEED";$("#machineScore").textContent=`${score} CORRECT`;beep(ok?520:150,.13);renderMap()}
-function next(){if(answers[step]===undefined)return;if(step<4){step++;renderQuestion()}else unlock()}
-function unlock(){phase="unlock";showView("#unlockView");const pct=score*20,value=couponFor(score);$("#unlockPercent").textContent=`${pct}%`;$("#unlockCopy").textContent=`你答对了 ${score} 题，已锁定 ¥${value} 优惠券。现在完成最后一步。`;$("#machineTitle").textContent="奖励摇奖机";$("#statusText").textContent="REWARD READY · PULL THE LEVER";$("#machineScore").textContent=`¥${value} LOCKED`;$("#stageDisplay").textContent="REWARD";lever.classList.remove("locked");renderMap();beep(620,.25)}
-function renderReels(indices=[0,4,7]){$("#reels").innerHTML=indices.map((n,col)=>`<div class="reel" data-reel="${col}"><div class="reel-items">${[-1,0,1].map(off=>`<div class="reel-item"><img src="${shoePath(rewardShoes[(n+off+9)%9])}" alt=""></div>`).join("")}</div></div>`).join("")}
-function spin(){if(phase!=="unlock"||spinning)return;spinning=true;phase="reel";showView("#reelView");renderReels();lever.classList.add("pulled");$("#statusText").textContent="CALCULATING YOUR REWARD...";let current=[0,4,7],target=Math.min(8,score+Math.floor(Math.random()*4));document.querySelectorAll(".reel").forEach(x=>x.classList.add("spinning"));current.forEach((_,col)=>{timers[col]=setInterval(()=>{current[col]=(current[col]+1)%9;const track=document.querySelector(`[data-reel="${col}"] .reel-items`);track.innerHTML=[-1,0,1].map(off=>`<div class="reel-item"><img src="${shoePath(rewardShoes[(current[col]+off+9)%9])}" alt=""></div>`).join("");beep(100+col*15,.025)},78+col*13);setTimeout(()=>stopReel(col,target),850+col*430)})}
-function stopReel(col,target){clearInterval(timers[col]);const reel=document.querySelector(`[data-reel="${col}"]`);reel.classList.remove("spinning");reel.querySelector(".reel-items").innerHTML=[-1,0,1].map(off=>`<div class="reel-item"><img src="${shoePath(rewardShoes[(target+off+9)%9])}" alt=""></div>`).join("");beep(300+col*100,.14);if(col===2)showCoupon(target)}
-function showCoupon(shoeIndex){spinning=false;phase="done";lever.classList.remove("pulled");machine.classList.add("reward");const value=couponFor(score),pct=score*20,code=`SOLE${value}-${Math.random().toString(36).slice(2,7).toUpperCase()}`;$("#couponValue").textContent=value;$("#couponCode").textContent=code;$("#resultSummary").textContent=`正确率 ${pct}% · 答对 ${score}/5 题 · 优惠券 100% 到手`;$("#couponRarity").textContent=score===5?"★ PERFECT CLEAR · MAX REWARD":"CHALLENGE COMPLETE · REWARD CLAIMED";$("#rewardShoe").src=shoePath(rewardShoes[shoeIndex]);$("#rewardShoeName").textContent=shoeNames[shoeIndex];$("#statusText").textContent="COUPON DISPENSED · CLAIMED";$("#stageDisplay").textContent="CLEARED";lever.classList.add("locked");$("#couponPanel").classList.remove("hidden");localStorage.setItem("soleSignalLastCoupon",JSON.stringify({value,code,score,date:new Date().toISOString()}));renderMap();setTimeout(()=>$("#couponPanel").scrollIntoView({behavior:"smooth",block:"center"}),450);beep(score===5?760:560,.35)}
-$("#startBtn").onclick=start;$("#nextBtn").onclick=next;lever.onclick=spin;$("#replayBtn").onclick=()=>{window.scrollTo({top:$(".journey").offsetTop-15,behavior:"smooth"});setTimeout(start,400)};$("#copyBtn").onclick=()=>navigator.clipboard.writeText($("#couponCode").textContent).then(()=>{const t=$("#toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)});$("#soundBtn").onclick=()=>{soundOn=!soundOn;$("#soundBtn").textContent=soundOn?"SOUND ON":"SOUND OFF"};document.addEventListener("keydown",e=>{if(e.code==="Space"&&!e.repeat&&phase==="unlock"){e.preventDefault();spin()}});renderMap();renderReels();
+const rewardShoes = [
+  "cream",
+  "sand",
+  "lilac",
+  "olive",
+  "silver",
+  "cobalt",
+  "orange",
+  "black",
+  "lime",
+];
+const shoeNames = [
+  "纯白低帮",
+  "沙丘经典",
+  "紫雾复古",
+  "苔原漫游",
+  "银翼未来",
+  "钴蓝脉冲",
+  "烈焰街头",
+  "暗影高帮",
+  "荧光加速",
+];
+const accuracyValues = [0, 33, 67, 100];
+const couponValues = [5, 8, 12, 20];
+const $ = (s) => document.querySelector(s);
+const machine = $("#machine"),
+  lever = $("#lever");
+let step = 0,
+  score = 0,
+  answers = [],
+  phase = "intro",
+  spinning = false,
+  soundOn = true;
+let timers = [],
+  stops = [],
+  finalShoe = 0,
+  entertainmentMode = false;
+
+function shoePath(id) {
+  return `assets/shoes/${id}.png`;
+}
+function couponFor(n) {
+  return couponValues[n];
+}
+function accuracyFor(n) {
+  return accuracyValues[n];
+}
+function showView(id) {
+  document.querySelectorAll(".view").forEach((v) => v.classList.add("hidden"));
+  $(id).classList.remove("hidden");
+}
+function beep(freq = 220, duration = 0.07) {
+  if (!soundOn) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)(),
+      osc = ctx.createOscillator(),
+      gain = ctx.createGain();
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.04, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch {}
+}
+
+function renderMap() {
+  $("#levelMap").innerHTML = questions
+    .map((_, i) => {
+      let state = "";
+      if (i === step && phase === "quiz") state = "active";
+      if (answers[i] === true) state = "correct";
+      if (answers[i] === false) state = "wrong";
+      return `<div class="level-node ${state}"><b>${answers[i] === true ? "✓" : answers[i] === false ? "×" : `0${i + 1}`}</b><span>LEVEL</span></div>`;
+    })
+    .join("");
+  $("#scoreLabel").textContent = `正确 ${score} / 3`;
+  $("#journeyLabel").textContent =
+    phase === "intro"
+      ? "挑战尚未开始"
+      : phase === "quiz"
+        ? `正在挑战第 ${step + 1} 关`
+        : phase === "unlock"
+          ? "三关完成 · 奖励档位已锁定"
+          : "优惠券已经领取";
+  document
+    .querySelectorAll("#tiers>div")
+    .forEach((x) =>
+      x.classList.toggle("active", Number(x.dataset.min) === score),
+    );
+  document
+    .querySelectorAll("#charge i")
+    .forEach((x, i) => x.classList.toggle("on", i < answers.length));
+}
+
+function start() {
+  phase = "quiz";
+  step = 0;
+  score = 0;
+  answers = [];
+  lever.classList.add("locked");
+  machine.classList.remove("reward");
+  $("#couponPanel").classList.add("hidden");
+  $("#machineTitle").textContent = "球鞋知识挑战";
+  $("#stageDisplay").textContent = "LEVEL 01";
+  renderQuestion();
+  renderMap();
+}
+function renderQuestion() {
+  const q = questions[step];
+  showView("#questionView");
+  $("#questionLevel").textContent = `LEVEL 0${step + 1} / 03`;
+  $("#questionType").textContent = q.type;
+  $("#questionImage").src = shoePath(q.shoe);
+  $("#questionText").textContent = q.q;
+  $("#answers").innerHTML = q.answers
+    .map(
+      (a, i) =>
+        `<button data-i="${i}"><b>${String.fromCharCode(65 + i)}</b><span>${a}</span><i>↗</i></button>`,
+    )
+    .join("");
+  $("#feedback").classList.add("hidden");
+  $("#statusText").textContent = `LEVEL 0${step + 1} · CHOOSE ONE`;
+  $("#machineScore").textContent = `${score} CORRECT`;
+  $("#stageDisplay").textContent = `LEVEL 0${step + 1}`;
+  document
+    .querySelectorAll("#answers button")
+    .forEach((b) => (b.onclick = () => answer(Number(b.dataset.i))));
+  renderMap();
+}
+function answer(choice) {
+  if (answers[step] !== undefined) return;
+  const q = questions[step],
+    ok = choice === q.correct;
+  answers[step] = ok;
+  if (ok) score++;
+  document.querySelectorAll("#answers button").forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.correct) b.classList.add("correct");
+    else if (i === choice) b.classList.add("wrong");
+  });
+  $("#feedbackIcon").textContent = ok ? "✓" : "×";
+  $("#feedbackIcon").style.color = ok ? "#26a957" : "#e54e39";
+  $("#feedbackTitle").textContent = ok
+    ? "回答正确 · 奖励升级"
+    : "差一点 · 继续闯关";
+  $("#feedbackText").textContent = q.why;
+  $("#nextBtn").innerHTML =
+    step === 2 ? "完成挑战 <span>→</span>" : "下一关 <span>→</span>";
+  $("#feedback").classList.remove("hidden");
+  $("#statusText").textContent = ok
+    ? "CORRECT · COUPON UPGRADED"
+    : "KEEP GOING · REWARD GUARANTEED";
+  $("#machineScore").textContent = `${score} CORRECT`;
+  beep(ok ? 520 : 150, 0.13);
+  renderMap();
+}
+function next() {
+  if (answers[step] === undefined) return;
+  if (step < 2) {
+    step++;
+    renderQuestion();
+  } else unlock();
+}
+function unlock() {
+  phase = "unlock";
+  showView("#unlockView");
+  const pct = accuracyFor(score),
+    value = couponFor(score);
+  $("#unlockPercent").textContent = `${pct}%`;
+  $("#unlockCopy").textContent =
+    `你答对了 ${score} 题，¥${value} 优惠券已经锁定。摇杆只负责揭晓，不会改变券额。`;
+  $("#machineTitle").textContent = "通关奖励舱";
+  $("#statusText").textContent = "REWARD LOCKED · OPEN THE CHAMBER";
+  $("#machineScore").textContent = `¥${value} LOCKED`;
+  $("#stageDisplay").textContent = "REVEAL";
+  lever.classList.remove("locked");
+  renderMap();
+  beep(620, 0.25);
+}
+
+function reelCell(col, index) {
+  if (col === 0)
+    return `<div class="reel-number">${accuracyValues[(index + 4) % 4]}%</div>`;
+  if (col === 1)
+    return `<img src="${shoePath(rewardShoes[(index + 9) % 9])}" alt="">`;
+  return `<div class="reel-coupon">¥${couponValues[(index + 4) % 4]}</div>`;
+}
+function setReel(col, center) {
+  const track = document.querySelector(`[data-reel="${col}"] .reel-items`);
+  track.innerHTML = [-1, 0, 1]
+    .map((off) => `<div class="reel-item">${reelCell(col, center + off)}</div>`)
+    .join("");
+}
+function renderReels(indices = [0, 4, 0]) {
+  $("#reels").innerHTML = indices
+    .map(
+      (n, col) =>
+        `<div class="reel" data-reel="${col}"><div class="reel-items">${[-1, 0, 1].map((off) => `<div class="reel-item">${reelCell(col, n + off)}</div>`).join("")}</div></div>`,
+    )
+    .join("");
+}
+function clearSpin() {
+  timers.forEach(clearInterval);
+  stops.forEach(clearTimeout);
+  timers = [];
+  stops = [];
+}
+function spin() {
+  if (phase !== "unlock" || spinning) return;
+  spinning = true;
+  phase = "reel";
+  showView("#reelView");
+  renderReels();
+  lever.classList.add("pulled");
+  $("#statusText").textContent = "REVEALING YOUR LOCKED REWARD...";
+  finalShoe = Math.min(8, score * 2 + Math.floor(Math.random() * 3));
+  const current = [0, 4, 0],
+    targets = [score, finalShoe, score];
+  document
+    .querySelectorAll(".reel")
+    .forEach((x) => x.classList.add("spinning"));
+  current.forEach((_, col) => {
+    timers[col] = setInterval(
+      () => {
+        current[col]++;
+        setReel(col, current[col]);
+        beep(100 + col * 15, 0.025);
+      },
+      78 + col * 13,
+    );
+    stops[col] = setTimeout(() => stopReel(col, targets[col]), 850 + col * 430);
+  });
+}
+function stopReel(col, target) {
+  clearInterval(timers[col]);
+  const reel = document.querySelector(`[data-reel="${col}"]`);
+  reel.classList.remove("spinning");
+  setReel(col, target);
+  beep(300 + col * 100, 0.14);
+  if (col === 2) showCoupon();
+}
+function skipSpin() {
+  if (!spinning) return;
+  clearSpin();
+  [score, finalShoe, score].forEach((target, col) => {
+    const reel = document.querySelector(`[data-reel="${col}"]`);
+    reel.classList.remove("spinning");
+    setReel(col, target);
+  });
+  showCoupon();
+}
+function showCoupon() {
+  clearSpin();
+  spinning = false;
+  phase = "done";
+  lever.classList.remove("pulled");
+  machine.classList.add("reward");
+  const value = couponFor(score),
+    pct = accuracyFor(score);
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem("soleSignalClaim"));
+  } catch {}
+  const code =
+    saved?.code ||
+    `SOLE${value}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+  if (!saved && !entertainmentMode) {
+    saved = { value, code, score, date: new Date().toISOString() };
+    localStorage.setItem("soleSignalClaim", JSON.stringify(saved));
+  }
+  $("#couponValue").textContent = saved?.value ?? value;
+  $("#couponCode").textContent = saved?.code ?? code;
+  $("#resultSummary").textContent = entertainmentMode
+    ? `娱乐模式成绩：正确率 ${pct}% · 本次不重复发券`
+    : `正确率 ${pct}% · 答对 ${score}/3 题 · 优惠券 100% 到手`;
+  $("#couponRarity").textContent =
+    score === 3
+      ? "★ PERFECT CLEAR · MAX REWARD"
+      : "CHALLENGE COMPLETE · REWARD CLAIMED";
+  $("#rewardShoe").src = shoePath(rewardShoes[finalShoe]);
+  $("#rewardShoeName").textContent = shoeNames[finalShoe];
+  $("#statusText").textContent = "REWARD CHAMBER OPENED";
+  $("#stageDisplay").textContent = "CLEARED";
+  lever.classList.add("locked");
+  $("#couponPanel").classList.remove("hidden");
+  renderMap();
+  setTimeout(
+    () =>
+      $("#couponPanel").scrollIntoView({ behavior: "smooth", block: "center" }),
+    350,
+  );
+  beep(score === 3 ? 760 : 560, 0.35);
+}
+
+$("#startBtn").onclick = start;
+$("#nextBtn").onclick = next;
+lever.onclick = spin;
+$("#skipBtn").onclick = skipSpin;
+$("#replayBtn").onclick = () => {
+  entertainmentMode = Boolean(localStorage.getItem("soleSignalClaim"));
+  $("#claimNote").textContent = entertainmentMode
+    ? "娱乐模式：首次奖励已经锁定，本次成绩不会再次生成优惠券。"
+    : $("#claimNote").textContent;
+  window.scrollTo({ top: $(".journey").offsetTop - 15, behavior: "smooth" });
+  setTimeout(start, 350);
+};
+$("#copyBtn").onclick = () =>
+  navigator.clipboard.writeText($("#couponCode").textContent).then(() => {
+    const toast = $("#toast");
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 1600);
+  });
+$("#soundBtn").onclick = () => {
+  soundOn = !soundOn;
+  $("#soundBtn").textContent = soundOn ? "SOUND ON" : "SOUND OFF";
+};
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Space" && !e.repeat && phase === "unlock") {
+    e.preventDefault();
+    spin();
+  }
+});
+renderMap();
+renderReels();
