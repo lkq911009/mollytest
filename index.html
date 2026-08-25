@@ -1,12 +1,61 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07090c"><meta name="description" content="拉下摇杆，摇出你的今日幸运球鞋。"><title>SOLE SIGNAL｜球鞋灵感摇奖机</title><link rel="stylesheet" href="styles.css"></head>
-<body><div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-<header><a class="brand" href="./">SOLE<span>///</span>SIGNAL</a><div class="live"><i></i> LIVE DROP · 2026</div><button id="soundBtn" class="icon-button" aria-label="切换音效">SOUND ON</button></header>
-<main>
-<section class="intro"><p class="eyebrow">INTERACTIVE SNEAKER GENERATOR</p><h1>拉一下，<br><em>摇出你的今日球鞋。</em></h1><p>三列分别决定鞋型、能量色和今日场景。每一次随机碰撞，都可能解锁一个意想不到的穿搭信号。</p></section>
-<section class="game-wrap"><div class="machine" id="machine"><div class="machine-top"><div class="screws"><i></i><i></i><i></i><i></i></div><p>SOLE SIGNAL LAB</p><h2>球鞋灵感摇奖机</h2><div class="status"><span id="statusText">READY TO PULL</span><b id="pullCount">000 PULLS</b></div></div>
-<div class="reel-window"><div class="payline"><span></span><b>LUCKY LINE</b><span></span></div><div id="reels" class="reels" aria-live="polite"></div><div class="reel-labels"><span>SHAPE / 鞋型</span><span>COLOR / 能量色</span><span>SCENE / 今日场景</span></div></div>
-<div class="machine-console"><div class="console-display"><small>YOUR MODE</small><strong id="modeDisplay">DAILY</strong></div><div class="slot-mouth"><i></i></div><div class="lever-unit"><button id="lever" class="lever" aria-label="拉下摇杆开始"><span class="lever-ball"></span><i></i><b></b></button><span>PULL</span></div></div></div>
-<aside class="control-panel"><p class="eyebrow">01 · CHOOSE YOUR ENERGY</p><h3>今天想释放哪种信号？</h3><div class="modes" role="group" aria-label="选择摇奖偏好"><button class="active" data-mode="daily"><span>日常耐看</span><small>DAILY</small></button><button data-mode="bold"><span>高调出场</span><small>BOLD</small></button><button data-mode="wild"><span>未知惊喜</span><small>WILD</small></button></div><div class="howto"><span>02</span><p><strong>拉下银色摇杆</strong><br>也可以按空格键启动。三列会依次停止，稀有组合会触发金色大奖。</p></div><div class="streak"><span>今日连摇</span><strong id="streakCount">0</strong><small>第 3 次起，稀有组合概率提升</small></div></aside></section>
-<section id="resultPanel" class="result-panel hidden" aria-live="polite"><div class="result-head"><div><p class="eyebrow" id="rarity">TODAY'S SIGNAL</p><h2 id="resultTitle"></h2></div><span id="resultCode"></span></div><div class="result-grid"><div class="result-shoe"><img id="resultImage" alt="摇奖结果球鞋"><span id="matchRate"></span></div><div class="result-copy"><p id="resultTags" class="tags"></p><h3 id="resultLine"></h3><p id="resultDescription"></p><div class="actions"><button id="shareBtn">复制结果 <span>↗</span></button><button id="againBtn">再摇一次 <span>↻</span></button></div></div></div></section>
-<section class="social-proof"><div><strong>9</strong><span>原创球鞋信号</span></div><div><strong>27</strong><span>随机风格组合</span></div><div><strong>1</strong><span>今日专属结果</span></div><p>TIP · 把结果截图发给朋友，看看谁摇到隐藏金色组合。</p></section></main>
-<div id="toast" class="toast">结果已复制，可以去分享了</div><footer><span>SOLE SIGNAL © 2026</span><span>ORIGINAL CONCEPT · NO BRAND AFFILIATION</span></footer><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07090c">
+  <meta name="description" content="完成五个球鞋挑战，100%领取优惠券。"><title>SOLE SIGNAL｜球鞋闯关摇奖机</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient a1"></div><div class="ambient a2"></div>
+  <header><a class="brand" href="./">SOLE<span>///</span>SIGNAL</a><div class="live"><i></i> SNEAKER CHALLENGE</div><button id="soundBtn" class="pill">SOUND ON</button></header>
+  <main>
+    <section class="intro"><p class="eyebrow">5 LEVELS · GUARANTEED REWARD</p><h1>闯过五关，<br><em>把优惠券摇回家。</em></h1><p>答错也能继续，完成挑战必得优惠券。正确率越高，最终解锁的券面额越大。</p></section>
+
+    <section class="journey" aria-label="闯关进度">
+      <div class="journey-head"><span id="journeyLabel">挑战尚未开始</span><b id="scoreLabel">正确 0 / 5</b></div>
+      <div id="levelMap" class="level-map"></div>
+      <div class="reward-scale"><span>完成奖励</span><div><i>¥5</i><i>¥8</i><i>¥12</i><i>¥16</i><i>¥20</i></div><small>答对 0–1 / 2 / 3 / 4 / 5 题</small></div>
+    </section>
+
+    <section class="game-layout">
+      <div class="machine" id="machine">
+        <div class="machine-top"><div class="screws"><i></i><i></i><i></i><i></i></div><p>SOLE SIGNAL LAB</p><h2 id="machineTitle">球鞋闯关摇奖机</h2><div class="status"><span id="statusText">INSERT YOUR CURIOSITY</span><b id="machineScore">READY</b></div></div>
+
+        <div class="machine-screen">
+          <section id="welcomeView" class="view welcome-view">
+            <div class="ticket-preview"><span>GUARANTEED</span><strong>¥5—¥20</strong><small>SNEAKER COUPON</small></div>
+            <p class="eyebrow">HOW TO PLAY</p><h3>五道轻量挑战，<br>测试你的球鞋直觉。</h3>
+            <ul><li><b>01</b> 每题三选一，选择后立即揭晓</li><li><b>02</b> 答错不淘汰，照样进入下一关</li><li><b>03</b> 五关结束后拉摇杆，领取对应优惠券</li></ul>
+            <button id="startBtn" class="primary">开始闯关 <span>↗</span></button>
+          </section>
+
+          <section id="questionView" class="view question-view hidden">
+            <div class="question-meta"><span id="questionLevel">LEVEL 01</span><b id="questionType"></b></div>
+            <div class="question-visual"><img id="questionImage" alt="本关球鞋"></div>
+            <h3 id="questionText"></h3><div id="answers" class="answers"></div>
+            <div id="feedback" class="feedback hidden"><div><b id="feedbackIcon"></b><span><strong id="feedbackTitle"></strong><small id="feedbackText"></small></span></div><button id="nextBtn">下一关 <span>→</span></button></div>
+          </section>
+
+          <section id="unlockView" class="view unlock-view hidden">
+            <div class="unlock-ring"><span id="unlockPercent">0%</span><small>ACCURACY</small></div>
+            <p class="eyebrow">ALL LEVELS CLEARED</p><h3>最终奖励已解锁</h3><p id="unlockCopy"></p><div class="pull-hint">拉下右侧摇杆，揭晓你的优惠券 <span>→</span></div>
+          </section>
+
+          <section id="reelView" class="view reel-view hidden">
+            <div class="payline"><span></span><b>REWARD LINE</b><span></span></div><div id="reels" class="reels"></div>
+          </section>
+        </div>
+
+        <div class="machine-console"><div class="console-display"><small>CURRENT STAGE</small><strong id="stageDisplay">INTRO</strong></div><div class="slot-mouth"></div><div class="lever-unit"><button id="lever" class="lever locked" aria-label="拉下摇杆领取优惠券"><span></span><i></i><b></b></button><em>PULL TO CLAIM</em></div></div>
+      </div>
+
+      <aside class="side-panel"><p class="eyebrow">REWARD RULES</p><h3>每个人都有奖励，<br>高手拿得更多。</h3><div id="tiers" class="tiers"><div data-min="0"><span>0–1 题</span><strong>¥5</strong></div><div data-min="2"><span>2 题</span><strong>¥8</strong></div><div data-min="3"><span>3 题</span><strong>¥12</strong></div><div data-min="4"><span>4 题</span><strong>¥16</strong></div><div data-min="5"><span>全对</span><strong>¥20</strong></div></div><div class="promise"><i>✓</i><p><strong>保证有奖</strong><br>没有失败页，不需要分享到群聊才能领取。</p></div><p class="fineprint">体验版优惠券仅作交互展示。正式活动需接入品牌会员或券码服务端。</p></aside>
+    </section>
+
+    <section id="couponPanel" class="coupon-panel hidden">
+      <div class="confetti" aria-hidden="true"></div>
+      <div class="coupon-result"><p class="eyebrow" id="couponRarity">CHALLENGE COMPLETE</p><h2>恭喜通关！</h2><p id="resultSummary"></p><div class="coupon"><div class="coupon-left"><span>SOLE SIGNAL</span><strong><small>¥</small><b id="couponValue">5</b></strong><em>球鞋专属优惠券</em></div><div class="coupon-right"><span>券码</span><strong id="couponCode">SOLE-0000</strong><small>满 ¥199 可用 · 体验券</small></div></div><div class="coupon-actions"><button id="copyBtn">复制券码 <span>↗</span></button><button id="replayBtn">重新挑战 <span>↻</span></button></div></div>
+      <div class="result-shoe"><img id="rewardShoe" alt="你的幸运球鞋"><span>YOUR LUCKY SNEAKER</span><h3 id="rewardShoeName"></h3></div>
+    </section>
+  </main>
+  <div id="toast" class="toast">券码已复制</div><footer><span>SOLE SIGNAL © 2026</span><span>100% REWARD · DEMO EXPERIENCE</span></footer><script src="app.js"></script>
+</body></html>
