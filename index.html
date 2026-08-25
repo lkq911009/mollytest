@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="用四道题找到你的球鞋人格。">
+  <title>SOLE SIGNAL｜你的球鞋人格</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <button class="brand" data-home>SOLE<span>///</span>SIGNAL</button>
+    <span class="edition">SNEAKER PROFILE · 2026</span>
+  </header>
+
+  <main>
+    <section id="intro" class="screen intro">
+      <div class="hero-copy">
+        <p class="eyebrow">4 QUESTIONS · 1 SNEAKER IDENTITY</p>
+        <h1>你的下一双鞋，<br>应该像谁？</h1>
+        <p class="intro-text">不是追热度，而是找到真正像你的那一双。四个直觉选择，匹配你的穿搭态度、生活节奏与球鞋性格。</p>
+        <button id="startBtn" class="primary"><span>开始测试</span><small>约 30 秒</small><b>↗</b></button>
+        <div class="legend"><span>极简派</span><span>街头派</span><span>机能派</span><span>户外派</span></div>
+      </div>
+      <div class="hero-art"><span class="stamp">FIND<br>YOUR<br>SOLE</span></div>
+    </section>
+
+    <section id="quiz" class="screen quiz hidden">
+      <div class="progress"><i id="progressBar"></i></div>
+      <div class="quiz-layout">
+        <aside><strong id="stepNumber">01</strong><span>/ 04</span></aside>
+        <div class="question-panel">
+          <p id="questionEyebrow" class="eyebrow"></p>
+          <h2 id="questionTitle"></h2>
+          <div id="options" class="options"></div>
+          <div class="question-footer"><button id="backBtn">← 上一题</button><span>选第一眼最有感觉的答案</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="screen result hidden">
+      <div class="result-hero">
+        <div class="result-copy">
+          <p class="eyebrow">YOUR SNEAKER IDENTITY</p>
+          <span id="resultIndex" class="watermark"></span>
+          <h2 id="resultName"></h2>
+          <h3 id="resultEn"></h3>
+          <p id="resultKicker" class="result-kicker"></p>
+          <p id="resultDesc" class="result-desc"></p>
+        </div>
+        <div class="shoe-stage"><div id="shoeArt" class="shoe-art"><span></span><i></i></div><b id="resultSymbol"></b></div>
+      </div>
+      <div class="matches">
+        <div class="section-title"><div><p class="eyebrow">CURATED FOR YOUR ROTATION</p><h2>你的球鞋方向</h2></div><p>以下是风格方向演示，鞋款均为原创虚构设计，不代表真实品牌或商品。</p></div>
+        <div id="cards" class="cards"></div>
+      </div>
+      <div class="share-block">
+        <p class="eyebrow">YOUR STYLE, YOUR SIGNAL</p>
+        <h2>鞋不只穿在脚上，<br>也表达你是谁。</h2>
+        <button id="copyBtn" class="primary light"><span>复制我的结果</span><small>分享给朋友</small><b>↗</b></button>
+      </div>
+      <footer><span>SOLE SIGNAL © 2026</span><button id="restartBtn">换一种风格，再测一次 ↻</button></footer>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
