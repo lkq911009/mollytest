@@ -48,6 +48,7 @@ let timers = [],
   selectedDrop = 0,
   selectedSize = 7,
   drawWon = false,
+  drawResult = null,
   entertainmentMode = false;
 
 try {
@@ -111,7 +112,9 @@ function renderMap() {
         ? `正在挑战第 ${step + 1} 关`
         : phase === "unlock"
           ? "三关完成 · 奖励档位已锁定"
-          : "优惠券已经领取";
+          : phase === "printing"
+            ? "正在打印奖励小票"
+            : "优惠券已经领取";
   document
     .querySelectorAll("#tiers>div")
     .forEach((x) =>
@@ -222,7 +225,10 @@ function reelCell(col, index) {
 function setReel(col, center) {
   const track = document.querySelector(`[data-reel="${col}"] .reel-items`);
   track.innerHTML = [-1, 0, 1]
-    .map((off) => `<div class="reel-item">${reelCell(col, center + off)}</div>`)
+    .map(
+      (off) =>
+        `<div class="reel-item ${off === 0 ? "is-result" : ""}">${reelCell(col, center + off)}</div>`,
+    )
     .join("");
 }
 function renderReels(indices = [0, 3, 0]) {
@@ -248,8 +254,13 @@ function spin() {
   lever.classList.add("pulled");
   $("#statusText").textContent = "VALIDATING ENTRY · DRAWING...";
   drawWon = Math.random() < 0.25;
+  drawResult = {
+    dropIndex: selectedDrop,
+    sizeIndex: selectedSize,
+    won: drawWon,
+  };
   const current = [0, 0, 0],
-    targets = [selectedDrop, selectedSize, drawWon ? 1 : 2];
+    targets = [drawResult.dropIndex, drawResult.sizeIndex, drawResult.won ? 1 : 2];
   document
     .querySelectorAll(".reel")
     .forEach((x) => x.classList.add("spinning"));
@@ -271,15 +282,25 @@ function stopReel(col, target) {
   reel.classList.remove("spinning");
   setReel(col, target);
   beep(300 + col * 100, 0.14);
-  if (col === 2) showCoupon();
+  if (col === 2) {
+    $("#statusText").textContent = "RESULT LOCKED · PRINTING NEXT";
+    setTimeout(showCoupon, 850);
+  }
 }
 function showCoupon() {
   clearSpin();
   spinning = false;
-  phase = "done";
+  phase = "printing";
   lever.classList.remove("pulled");
   machine.classList.add("reward");
-  const value = couponFor(score),
+  const result = drawResult || {
+      dropIndex: selectedDrop,
+      sizeIndex: selectedSize,
+      won: drawWon,
+    },
+    resultDrop = drops[result.dropIndex],
+    resultSize = sizes[result.sizeIndex],
+    value = couponFor(score),
     pct = accuracyFor(score);
   let saved = null;
   try {
@@ -292,9 +313,9 @@ function showCoupon() {
       value,
       code,
       score,
-      shoe: drops[selectedDrop].id,
-      size: sizes[selectedSize],
-      drawWon,
+      shoe: resultDrop.id,
+      size: resultSize,
+      drawWon: result.won,
       date: new Date().toISOString(),
     };
     localStorage.setItem("soleSignalClaim", JSON.stringify(saved));
@@ -304,30 +325,40 @@ function showCoupon() {
     ? `DEMO-${value}-${code.slice(-5)}`
     : saved.code;
   const modeCopy = entertainmentMode ? " · 娱乐模式不重复发券" : "";
-  $("#resultSummary").textContent = drawWon
-    ? `${drops[selectedDrop].name} ${sizes[selectedSize]} 码模拟中签 · ¥${value} 优惠券同时到账${modeCopy}`
+  $("#resultSummary").textContent = result.won
+    ? `${resultDrop.name} ${resultSize} 码模拟中签 · ¥${value} 优惠券同时到账${modeCopy}`
     : `本次未获得模拟购买资格 · ¥${value} 保底优惠券已经到账${modeCopy}`;
-  $("#couponRarity").textContent = drawWon
+  $("#couponRarity").textContent = result.won
     ? "GOT ’EM · PURCHASE ACCESS"
     : "NOT THIS TIME · COUPON SECURED";
-  $("#resultTitle").textContent = drawWon ? "模拟中签！" : "保底奖励已到账";
-  $("#rewardShoe").src = dropPath(drops[selectedDrop]);
-  $("#rewardShoeName").textContent = `${drops[selectedDrop].name} · ${sizes[selectedSize]} 码`;
-  $("#drawResultBadge").textContent = drawWon
+  $("#resultTitle").textContent = result.won ? "模拟中签！" : "保底奖励已到账";
+  $("#rewardShoe").src = dropPath(resultDrop);
+  $("#rewardShoeName").textContent = `${resultDrop.name} · ${resultSize} 码`;
+  $("#drawResultBadge").textContent = result.won
     ? "GOT ’EM · 模拟购买资格"
     : "NOT THIS TIME · 本次未中签";
-  $("#drawResultBadge").className = `draw-result-badge ${drawWon ? "won" : "lost"}`;
-  $("#statusText").textContent = "DRAW COMPLETE · COUPON SECURED";
-  $("#machineTitle").textContent = "小票打印完成";
-  $("#stageDisplay").textContent = "CLEARED";
+  $("#drawResultBadge").className = `draw-result-badge ${result.won ? "won" : "lost"}`;
+  $("#statusText").textContent = "PRINTING REWARD RECEIPT...";
+  $("#machineTitle").textContent = "正在打印奖励小票";
+  $("#stageDisplay").textContent = "PRINTING";
   lever.classList.add("locked");
-  $("#couponPanel").classList.remove("hidden");
+  const panel = $("#couponPanel");
+  panel.classList.remove("hidden", "printing", "printed");
+  panel.classList.add("printing");
   renderMap();
   setTimeout(
     () =>
-      $("#couponPanel").scrollIntoView({ behavior: "smooth", block: "center" }),
-    350,
+      $(".slot-mouth").scrollIntoView({ behavior: "smooth", block: "center" }),
+    120,
   );
+  setTimeout(() => {
+    phase = "done";
+    panel.classList.add("printed");
+    $("#statusText").textContent = "RECEIPT READY · COUPON SECURED";
+    $("#machineTitle").textContent = "小票打印完成";
+    $("#stageDisplay").textContent = "CLEARED";
+    renderMap();
+  }, 2400);
   beep(score === 3 ? 760 : 560, 0.35);
 }
 
@@ -363,9 +394,11 @@ $("#replayBtn").onclick = () => {
   score = 0;
   step = 0;
   answers = [];
+  drawResult = null;
   machine.classList.remove("reward");
   lever.classList.add("locked");
   $("#couponPanel").classList.add("hidden");
+  $("#couponPanel").classList.remove("printing", "printed");
   $("#machineTitle").textContent = "球鞋限量发售售卖机";
   $("#statusText").textContent = "SELECT A DROP · CHOOSE YOUR SIZE";
   $("#machineScore").textContent = "READY";
