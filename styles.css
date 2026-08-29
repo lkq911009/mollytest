@@ -753,13 +753,14 @@ main {
 }
 .lever-unit {
   position: absolute;
-  right: -82px;
+  right: 10px;
   top: -246px;
   width: 90px;
   height: 270px;
   display: flex;
   align-items: center;
   flex-direction: column;
+  z-index: 20;
 }
 .lever {
   position: relative;
@@ -768,6 +769,8 @@ main {
   border: 0;
   background: transparent;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   transform-origin: 50% 88%;
   transition: 0.28s;
 }
@@ -779,6 +782,10 @@ main {
 .lever:not(.locked):active,
 .lever.pulled {
   transform: rotate(24deg) translateY(15px);
+}
+.lever:not(.locked):focus-visible {
+  outline: 3px dashed var(--red);
+  outline-offset: 5px;
 }
 .lever > span {
   position: absolute;
@@ -1414,7 +1421,7 @@ footer { border-top: 2px solid var(--ink); color: #555650; }
     min-width: 104px;
   }
   .lever-unit {
-    right: -44px;
+    right: 2px;
     top: -205px;
     width: 64px;
     height: 215px;
