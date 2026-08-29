@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#07090c" />
     <meta name="description" content="选择限量球鞋并提交模拟抽签，完成挑战100%领取优惠券。" />
     <title>SOLE SIGNAL｜球鞋限量发售抽签</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=vending01" />
   </head>
   <body>
     <div class="ambient a1"></div>
@@ -21,10 +21,10 @@
     </header>
     <main>
       <section class="intro">
-        <p class="eyebrow">LIMITED DROP · GUARANTEED REWARD</p>
-        <h1>选定你的球鞋，<br /><em>提交限量发售签。</em></h1>
+        <p class="eyebrow">SNEAKER VENDING · LIMITED DROP</p>
+        <h1>选定你的球鞋，<br /><em>启动限量发售。</em></h1>
         <p>
-          先选择目标鞋款和尺码，再完成三道挑战。抽签决定模拟购买资格，正确率决定保底优惠券。
+          从售卖柜选择目标鞋款和尺码，完成三道挑战为签位充能。系统验证发售资格，并从票口送出保底优惠券。
         </p>
       </section>
 
@@ -45,8 +45,8 @@
         <div class="machine" id="machine">
           <div class="machine-top">
             <div class="screws"><i></i><i></i><i></i><i></i></div>
-            <p>SOLE SIGNAL LAB</p>
-            <h2 id="machineTitle">球鞋限量发售抽签</h2>
+            <p>SOLE SIGNAL · VENDING UNIT 01</p>
+            <h2 id="machineTitle">球鞋限量发售售卖机</h2>
             <div class="status">
               <span id="statusText">SELECT A DROP · CHOOSE YOUR SIZE</span
               ><b id="machineScore">READY</b>
@@ -57,25 +57,25 @@
           <div class="machine-screen">
             <section id="welcomeView" class="view welcome-view">
               <div class="drop-head">
-                <p class="eyebrow">SELECT YOUR DROP</p>
-                <h3>选择目标鞋款与尺码</h3>
+                <p class="eyebrow">SELECT PRODUCT LANE</p>
+                <h3>选择球鞋货道与尺码</h3>
               </div>
               <div id="dropChoices" class="drop-choices">
                 <button class="selected" data-shoe="silver-ribbon">
                   <img src="assets/shoes/drop-silver.jpg" alt="银缎丝带限定" />
-                  <span><b>银缎丝带</b><small>UNISEX · LIMITED 01</small></span>
+                  <span><b>银缎丝带</b><small>货道 01 · LIMITED</small></span>
                 </button>
                 <button data-shoe="red-suede">
                   <img src="assets/shoes/drop-red.jpg" alt="赤红麂皮限定" />
-                  <span><b>赤红麂皮</b><small>UNISEX · LIMITED 02</small></span>
+                  <span><b>赤红麂皮</b><small>货道 02 · LIMITED</small></span>
                 </button>
                 <button data-shoe="woven-cream">
                   <img src="assets/shoes/drop-woven.jpg" alt="奶油编织限定" />
-                  <span><b>奶油编织</b><small>UNISEX · LIMITED 03</small></span>
+                  <span><b>奶油编织</b><small>货道 03 · LIMITED</small></span>
                 </button>
                 <button data-shoe="white-navy">
                   <img src="assets/shoes/drop-white-blue.jpg" alt="白蓝复古限定" />
-                  <span><b>白蓝复古</b><small>UNISEX · LIMITED 04</small></span>
+                  <span><b>白蓝复古</b><small>货道 04 · LIMITED</small></span>
                 </button>
               </div>
               <div class="size-picker">
@@ -89,7 +89,7 @@
                 </div>
               </div>
               <button id="startBtn" class="primary">
-                锁定鞋款，开始挑战 <span>↗</span>
+                确认货道，开始挑战 <span>↗</span>
               </button>
             </section>
 
@@ -117,16 +117,16 @@
                 <span id="unlockPercent">0%</span><small>ACCURACY</small>
               </div>
               <p class="eyebrow">ALL LEVELS CLEARED</p>
-              <h3>签位与保底奖励已准备</h3>
+              <h3>发售签与奖励小票已准备</h3>
               <p id="unlockCopy"></p>
               <div class="pull-hint">
-                拉下右侧摇杆，提交模拟抽签 <span>→</span>
+                点击下方 SUBMIT，验证发售签 <span>↓</span>
               </div>
             </section>
 
             <section id="reelView" class="view reel-view hidden">
               <div class="payline">
-                <span></span><b>REVEAL LINE</b><span></span>
+                <span></span><b>VENDING CHECK</b><span></span>
               </div>
               <div id="reels" class="reels"></div>
               <div class="reel-captions">
@@ -141,23 +141,26 @@
               <small>CURRENT STAGE</small
               ><strong id="stageDisplay">ENTRY</strong>
             </div>
-            <div class="slot-mouth"></div>
+            <div class="slot-mouth"><span>REWARD RECEIPT</span></div>
             <div class="lever-unit">
               <button
                 id="lever"
                 type="button"
                 class="lever locked"
-                aria-label="拉下摇杆提交模拟抽签"
+                aria-label="点击提交发售签并查看结果"
               >
-                <span></span><i></i><b></b></button
-              ><em>SUBMIT ENTRY</em>
+                <span>PRESS TO</span><b>SUBMIT</b><i>↗</i></button
+              ><em>VEND ENTRY</em>
             </div>
           </div>
         </div>
 
         <aside class="side-panel">
-          <p class="eyebrow">DRAW RULES</p>
-          <h3>抽签决定资格，<br />答题锁定保底券。</h3>
+          <p class="eyebrow">VENDING CONTROL</p>
+          <h3>选择货道与尺码，<br />答题解锁发售签。</h3>
+          <div class="vending-keypad" aria-hidden="true">
+            <span>01</span><span>02</span><span>03</span><span>04</span>
+          </div>
           <div id="tiers" class="tiers">
             <div data-min="0"><span>0 题</span><strong>¥5</strong></div>
             <div data-min="1"><span>1 题</span><strong>¥8</strong></div>
@@ -172,8 +175,8 @@
           <div class="promise">
             <i>✓</i>
             <p>
-              <strong>保证有奖</strong
-              ><br />无论是否中签，都能获得与正确率对应的优惠券。
+              <strong>小票保证送出</strong
+              ><br />无论是否获得购买资格，票口都会打印与正确率对应的优惠券。
             </p>
           </div>
           <p id="claimNote" class="fineprint">
@@ -220,6 +223,6 @@
     <footer>
       <span>SOLE SIGNAL © 2026</span><span>100% REWARD · DEMO EXPERIENCE</span>
     </footer>
-    <script src="app.js"></script>
+    <script src="app.js?v=vending01"></script>
   </body>
 </html>

@@ -131,7 +131,7 @@ function start() {
   lever.classList.add("locked");
   machine.classList.remove("reward");
   $("#couponPanel").classList.add("hidden");
-  $("#machineTitle").textContent = "球鞋知识挑战";
+  $("#machineTitle").textContent = "售卖机资格挑战";
   $("#statusText").textContent = "ENTRY LOCKED · START CHALLENGE";
   $("#stageDisplay").textContent = "LEVEL 01";
   renderQuestion();
@@ -199,8 +199,8 @@ function unlock() {
     value = couponFor(score);
   $("#unlockPercent").textContent = `${pct}%`;
   $("#unlockCopy").textContent =
-    `目标：${drops[selectedDrop].name}，尺码 ${sizes[selectedSize]}。¥${value} 保底优惠券已经锁定，抽签结果不会改变券额。`;
-  $("#machineTitle").textContent = "限量发售抽签舱";
+    `货道：${String(selectedDrop + 1).padStart(2, "0")} · ${drops[selectedDrop].name}，尺码 ${sizes[selectedSize]}。¥${value} 优惠券小票已锁定，验证结果不会改变券额。`;
+  $("#machineTitle").textContent = "限量发售验证终端";
   $("#statusText").textContent = "ENTRY READY · SUBMIT THE DRAW";
   $("#machineScore").textContent = `¥${value} LOCKED`;
   $("#stageDisplay").textContent = "REVEAL";
@@ -376,7 +376,7 @@ $("#replayBtn").onclick = () => {
   machine.classList.remove("reward");
   lever.classList.add("locked");
   $("#couponPanel").classList.add("hidden");
-  $("#machineTitle").textContent = "球鞋限量发售抽签";
+  $("#machineTitle").textContent = "球鞋限量发售售卖机";
   $("#statusText").textContent = "SELECT A DROP · CHOOSE YOUR SIZE";
   $("#machineScore").textContent = "READY";
   $("#stageDisplay").textContent = "ENTRY";

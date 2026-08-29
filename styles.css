@@ -1489,3 +1489,425 @@ footer { border-top: 2px solid var(--ink); color: #555650; }
     transition: none !important;
   }
 }
+
+/* VENDING UNIT 01 / 球鞋自动售卖机视觉系统 */
+.machine {
+  border-width: 4px;
+  border-radius: 8px 8px 18px 18px;
+  background: #e8e7df;
+  box-shadow: 12px 14px 0 var(--ink);
+}
+.machine:before {
+  content: "01";
+  position: absolute;
+  z-index: 5;
+  right: 18px;
+  top: 16px;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 3px solid var(--ink);
+  background: var(--gold);
+  font: 900 18px/1 Arial, sans-serif;
+  transform: rotate(2deg);
+}
+.machine-top {
+  padding: 22px 76px 18px 28px;
+  border-bottom: 4px solid var(--ink);
+  background: #fffdf6;
+}
+.machine-top:after {
+  content: "SELECT  /  VERIFY  /  DISPENSE";
+  display: block;
+  margin-top: 11px;
+  color: #6b6a62;
+  font: 700 8px/1 monospace;
+  letter-spacing: .18em;
+}
+.machine-top h2 {
+  font: 400 clamp(25px, 3.2vw, 38px)/1.05 Georgia, "Songti SC", serif;
+}
+.machine-top > p { color: var(--red); }
+.status {
+  border-width: 3px;
+  background: var(--ink);
+}
+.charge i {
+  border-color: var(--ink);
+  background: #fff;
+}
+.charge i.on { background: var(--gold); }
+.machine-screen {
+  margin: 16px;
+  border: 4px solid var(--ink);
+  background:
+    linear-gradient(#ffffffd9,#ffffffd9),
+    repeating-linear-gradient(90deg, transparent 0 31px, #17171412 32px),
+    repeating-linear-gradient(0deg, transparent 0 31px, #17171412 32px);
+  box-shadow: inset 0 0 0 8px #d4d2c8;
+}
+.welcome-view { padding: 30px; }
+.welcome-view:before { display: none; }
+.drop-head {
+  margin: -2px -2px 20px;
+  padding: 0 0 15px;
+  border-bottom: 3px solid var(--ink);
+}
+.drop-head:after {
+  content: "点击亮起你的目标货道 ↘";
+  float: right;
+  margin-top: -23px;
+  font: italic 14px Georgia, "Kaiti SC", serif;
+  transform: rotate(-3deg);
+}
+.drop-choices {
+  gap: 14px;
+  padding: 8px;
+  border: 3px solid var(--ink);
+  background: #d9e4e4;
+}
+.drop-choices button {
+  position: relative;
+  min-height: 258px;
+  padding: 10px 10px 12px;
+  border: 3px solid var(--ink);
+  border-radius: 2px;
+  background: #fffdf6;
+  box-shadow: none;
+  transform: none !important;
+  overflow: visible;
+}
+.drop-choices button:before {
+  position: absolute;
+  z-index: 2;
+  right: 7px;
+  top: 7px;
+  display: grid;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  border: 2px solid var(--ink);
+  background: #fff;
+  font: 900 11px/1 monospace;
+}
+.drop-choices button:nth-child(1):before { content: "01"; }
+.drop-choices button:nth-child(2):before { content: "02"; }
+.drop-choices button:nth-child(3):before { content: "03"; }
+.drop-choices button:nth-child(4):before { content: "04"; }
+.drop-choices button:after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 49px;
+  height: 9px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: repeating-linear-gradient(90deg,#fff 0 7px,var(--ink) 8px 9px);
+}
+.drop-choices img {
+  height: 190px;
+  border: 0;
+  border-radius: 0;
+  filter: saturate(.88) contrast(.96);
+}
+.drop-choices button.selected {
+  background: #fff9c9;
+  box-shadow: 0 0 0 5px var(--gold), 6px 7px 0 var(--ink);
+}
+.drop-choices button.selected:before {
+  background: var(--gold);
+}
+.drop-choices button.selected img { filter: saturate(1.06) contrast(1.02); }
+.size-picker {
+  margin-top: 20px;
+  padding: 16px;
+  border: 3px solid var(--ink);
+  background: #fffdf6;
+}
+.size-picker > span:after {
+  content: " / SIZE CODE";
+  color: var(--red);
+}
+.primary { border-radius: 2px; }
+.question-view,
+.unlock-view {
+  margin: 24px;
+  min-height: 520px;
+  border: 3px solid var(--ink);
+  background: #fffdf6;
+  box-shadow: 7px 8px 0 var(--ink);
+}
+.question-view:before {
+  content: "VENDING TOUCH SCREEN";
+  position: absolute;
+  left: 24px;
+  top: 18px;
+  color: #77746c;
+  font: 700 8px/1 monospace;
+  letter-spacing: .18em;
+}
+.answers button { border-radius: 1px; }
+.unlock-view:before {
+  content: "ENTRY VERIFIED";
+  display: inline-block;
+  margin-bottom: 18px;
+  padding: 7px 12px;
+  border: 2px solid var(--ink);
+  background: #cce8d1;
+  font: 900 9px/1 monospace;
+  letter-spacing: .14em;
+}
+.unlock-view:after { content: "小票已装载，按下 SUBMIT！"; }
+.pull-hint {
+  background: var(--gold);
+  border-style: solid;
+}
+.reel-view { background: #dce6ef; }
+.payline {
+  border-style: solid;
+  border-color: var(--red);
+}
+.payline b { background: var(--red); }
+.reel {
+  background: #fffdf6;
+}
+.machine-console {
+  position: relative;
+  min-height: 118px;
+  padding: 20px 176px 20px 22px;
+  border-top: 4px solid var(--ink);
+  background: #d5d2c8;
+}
+.console-display {
+  min-width: 138px;
+  border-radius: 2px;
+  background: #171714;
+}
+.slot-mouth {
+  position: relative;
+  height: 47px;
+  border: 3px solid var(--ink);
+  border-radius: 3px;
+  background: #fffdf6;
+  box-shadow: inset 0 8px 0 #1717141f;
+}
+.slot-mouth:after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 17px;
+  height: 7px;
+  background: var(--ink);
+}
+.slot-mouth span {
+  position: absolute;
+  left: 50%;
+  top: 31px;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  font: 700 7px/1 monospace;
+  letter-spacing: .16em;
+}
+.lever-unit {
+  right: 18px;
+  top: 15px;
+  width: 138px;
+  height: auto;
+  z-index: 20;
+}
+.lever {
+  display: grid;
+  grid-template: auto auto / 1fr auto;
+  width: 132px;
+  height: 72px;
+  padding: 10px 12px;
+  border: 3px solid var(--ink);
+  border-radius: 2px;
+  background: var(--gold);
+  color: var(--ink);
+  box-shadow: 5px 6px 0 var(--ink);
+  transform: none;
+  transform-origin: center;
+}
+.lever > span,
+.lever b,
+.lever i {
+  position: static;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.lever > span {
+  grid-column: 1 / -1;
+  font: 700 8px/1 monospace;
+  letter-spacing: .15em;
+  text-align: left;
+}
+.lever b {
+  align-self: end;
+  font: 900 21px/1 Arial, sans-serif;
+  text-align: left;
+}
+.lever i {
+  align-self: end;
+  font: 900 20px/1 Arial, sans-serif;
+  font-style: normal;
+}
+.lever:not(.locked):hover { background: #f2ff6f; }
+.lever:not(.locked):active,
+.lever.pulled {
+  transform: translate(4px,5px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+.lever.locked {
+  background: #d0cec4;
+  filter: none;
+}
+.lever-unit em {
+  margin-top: 12px;
+  font-size: 8px;
+  color: var(--ink);
+}
+.side-panel {
+  padding: 25px 20px;
+  background: #e9e7de;
+}
+.side-panel:before {
+  content: "CONTROL PANEL";
+  display: block;
+  margin: -8px 0 15px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--ink);
+  font: 900 10px/1 monospace;
+  letter-spacing: .17em;
+}
+.vending-keypad {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 7px;
+  margin: 17px 0;
+  padding: 10px;
+  border: 3px solid var(--ink);
+  background: #171714;
+}
+.vending-keypad span {
+  display: grid;
+  height: 35px;
+  place-items: center;
+  border: 2px solid #fffdf6;
+  background: #e7e5db;
+  color: var(--ink);
+  font: 900 12px/1 monospace;
+}
+.vending-keypad span:first-child { background: var(--gold); }
+.entry-card { background: #fff9c9; }
+.coupon-panel {
+  position: relative;
+  background: #d5d2c8;
+}
+.coupon-panel:before {
+  content: "REWARD DISPENSED";
+  position: absolute;
+  z-index: 4;
+  left: 24px;
+  top: 18px;
+  padding: 7px 10px;
+  border: 2px solid var(--ink);
+  background: var(--gold);
+  font: 900 9px/1 monospace;
+  letter-spacing: .14em;
+}
+.coupon-result { background: #fffdf6; }
+.coupon {
+  position: relative;
+  border-style: dashed;
+  background: #fffdf6;
+  color: var(--ink);
+  box-shadow: 6px 7px 0 var(--red);
+}
+.coupon:before,
+.coupon:after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: #d5d2c8;
+}
+.coupon:before { left: -11px; }
+.coupon:after { right: -11px; }
+.coupon-left { border-right-color: var(--ink); }
+.coupon-left > span,
+.coupon-left em,
+.coupon-right span,
+.coupon-right small { color: #5f5d56; }
+.coupon-right strong { color: var(--ink); }
+.result-shoe { background: #cfdfe9; }
+
+@media (max-width: 950px) {
+  .machine { margin-right: 0; }
+}
+@media (max-width: 640px) {
+  .machine { margin-right: 0; }
+  .machine:before {
+    right: 10px;
+    top: 12px;
+    width: 36px;
+    height: 36px;
+  }
+  .machine-top { padding: 17px 55px 14px 15px; }
+  .machine-screen {
+    margin: 9px;
+    box-shadow: inset 0 0 0 5px #d4d2c8;
+  }
+  .welcome-view { padding: 22px 14px; }
+  .drop-head:after {
+    float: none;
+    display: block;
+    margin: 7px 0 0;
+  }
+  .drop-choices { gap: 9px; padding: 7px; }
+  .drop-choices button {
+    min-height: 218px;
+    padding: 7px;
+  }
+  .drop-choices img { height: 150px; }
+  .drop-choices button:after { bottom: 45px; }
+  .question-view,
+  .unlock-view {
+    margin: 13px;
+    min-height: 460px;
+  }
+  .machine-console {
+    min-height: 122px;
+    padding: 14px 128px 14px 12px;
+  }
+  .console-display {
+    min-width: 92px;
+    padding: 8px;
+  }
+  .slot-mouth { height: 43px; }
+  .lever-unit {
+    right: 8px;
+    top: 19px;
+    width: 112px;
+    height: auto;
+  }
+  .lever {
+    width: 108px;
+    height: 65px;
+    padding: 9px;
+  }
+  .lever b { font-size: 17px; }
+  .lever-unit em { margin-top: 9px; }
+  .coupon-panel:before { left: 14px; top: 11px; }
+  .coupon-left { border-right: 0; border-bottom-color: var(--ink); }
+}
