@@ -1091,6 +1091,218 @@ footer {
   font-size: 8px;
   letter-spacing: 0.15em;
 }
+
+/* BLACK LINE / 黑白拙线视觉系统 */
+:root {
+  --ink: #171714;
+  --red: #ed5b45;
+  --cyan: #68b8a0;
+  --gold: #f3d84b;
+  --paper: #f5f0e4;
+}
+body {
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(#17171408 1px, transparent 1px),
+    linear-gradient(90deg, #17171408 1px, transparent 1px),
+    radial-gradient(circle at 9% 15%, #f6c9c0 0, transparent 25%),
+    radial-gradient(circle at 91% 28%, #c7dcef 0, transparent 28%);
+  background-size: 25px 25px, 25px 25px, auto, auto;
+}
+.ambient { opacity: 0.12; filter: blur(70px); }
+header {
+  border-bottom: 2px solid var(--ink);
+  background: #fffdf6b8;
+}
+.brand { color: var(--ink); transform: rotate(-1deg); }
+.brand span { color: var(--red); }
+.live i { background: var(--ink); box-shadow: none; }
+.pill {
+  border: 2px solid var(--ink);
+  border-radius: 2px 8px 3px 7px;
+  background: #fffdf6;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.intro { position: relative; }
+.intro:after {
+  content: "先挑喜欢的，再把幸运交出去 ↘";
+  position: absolute;
+  right: 5%;
+  bottom: 22px;
+  font: italic 15px Georgia, "Kaiti SC", serif;
+  transform: rotate(-4deg);
+}
+.intro .eyebrow { color: var(--ink); }
+.intro h1 { color: var(--ink); }
+.intro h1 em { color: #506a61; text-decoration: underline 3px var(--red); text-underline-offset: 9px; }
+.intro > p:last-child { color: #52534f; }
+.journey-head { color: #4f504c; }
+.journey-head b { color: var(--ink); }
+.level-node {
+  border: 2px solid var(--ink);
+  background: #fffdf6;
+  color: var(--ink);
+  box-shadow: 3px 3px 0 #17171425;
+}
+.level-node:nth-child(2) { transform: rotate(-0.7deg); }
+.level-node.active { border-color: var(--ink); background: #dbeee6; color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+.level-node.correct { border-color: var(--ink); background: #cce8b8; color: var(--ink); }
+.level-node.wrong { border-color: var(--ink); background: #f6c9c0; color: var(--ink); }
+.reward-scale { color: #555650; }
+.machine {
+  border: 3px solid var(--ink);
+  border-radius: 4px 9px 3px 7px;
+  background: #fffdf6;
+  box-shadow: 10px 11px 0 var(--ink);
+}
+.machine:before {
+  opacity: 0.06;
+  background: repeating-linear-gradient(-7deg, transparent 0 7px, #111 8px 9px);
+}
+.machine-top { border-bottom: 3px solid var(--ink); background: #fffdf6; }
+.machine-top h2 { font-family: Georgia, "Songti SC", serif; font-weight: 400; }
+.screws i { background: var(--ink); box-shadow: none; }
+.status { border: 2px solid var(--ink); background: var(--ink); color: #fffdf6; box-shadow: none; }
+.charge i { height: 6px; border: 1px solid var(--ink); background: #fffdf6; box-shadow: none; }
+.charge i.on { background: var(--gold); box-shadow: none; }
+.machine-screen {
+  border-inline: 3px solid var(--ink);
+  background: #fffdf6;
+}
+.view { color: var(--ink); }
+.welcome-view { position: relative; }
+.welcome-view:before {
+  content: "慢慢选，不着急";
+  position: absolute;
+  z-index: 3;
+  top: 18px;
+  right: 24px;
+  font: italic 13px Georgia, "Kaiti SC", serif;
+  transform: rotate(5deg);
+}
+.drop-head .eyebrow { color: var(--ink); }
+.drop-head h3 { font-family: Georgia, "Songti SC", serif; font-weight: 400; }
+.drop-choices { gap: 10px; }
+.drop-choices button {
+  border: 2px solid var(--ink);
+  border-radius: 2px 7px 3px 5px;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.drop-choices button:nth-child(1) { transform: rotate(-1.1deg); background: #f6e1db; }
+.drop-choices button:nth-child(2) { transform: rotate(0.8deg); background: #f4dfa4; }
+.drop-choices button:nth-child(3) { transform: rotate(-0.6deg); background: #dcebdd; }
+.drop-choices button:nth-child(4) { transform: rotate(1deg); background: #dde4f1; }
+.drop-choices button.selected { border-color: var(--ink); background: var(--gold); box-shadow: 6px 6px 0 var(--ink); }
+.drop-choices img { border: 2px solid var(--ink); filter: saturate(.82) contrast(.96); }
+.drop-choices small { color: #555650; }
+.size-picker > div { gap: 5px; }
+.size-picker button {
+  border: 2px solid var(--ink);
+  background: #fffdf6;
+  color: var(--ink);
+  border-radius: 50% 46% 52% 45%;
+}
+.size-picker button.selected { background: var(--ink); color: #fffdf6; }
+.primary {
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  box-shadow: 5px 5px 0 var(--red);
+}
+.question-view { position: relative; }
+.question-view:before {
+  content: "想一想，再选 ↓";
+  position: absolute;
+  right: 30px;
+  top: 28px;
+  font: italic 14px Georgia, "Kaiti SC", serif;
+  transform: rotate(4deg);
+}
+.question-view h3 { font-family: Georgia, "Songti SC", serif; font-weight: 400; }
+.answers button {
+  border: 2px solid var(--ink);
+  border-radius: 2px 8px 3px 6px;
+  background: #fffdf6;
+  color: var(--ink);
+  box-shadow: 3px 3px 0 #17171422;
+}
+.answers button:nth-child(2) { transform: rotate(-0.35deg); }
+.answers button:hover { border-color: var(--ink); background: #f7eeaf; }
+.answers button.correct { border-color: var(--ink); background: #cae8b9; box-shadow: 4px 4px 0 var(--ink); }
+.answers button.wrong { border-color: var(--ink); background: #f5c8c0; box-shadow: 4px 4px 0 var(--ink); }
+.feedback { border: 2px solid var(--ink); background: #fff; box-shadow: 4px 4px 0 var(--ink); }
+.feedback button { border: 2px solid var(--ink); background: var(--ink); }
+.unlock-view { position: relative; }
+.unlock-view:after {
+  content: "签位准备好啦！";
+  position: absolute;
+  left: 52%;
+  top: 45px;
+  font: italic 15px Georgia, "Kaiti SC", serif;
+  transform: rotate(8deg);
+}
+.unlock-ring { border: 3px solid var(--ink); background: var(--gold); box-shadow: 8px 8px 0 var(--ink); }
+.unlock-ring span { color: var(--ink); }
+.pull-hint { border: 2px dashed var(--ink); background: #dcebdd; }
+.reel { border-right: 2px solid var(--ink); background: #fffdf6; }
+.reel:before { background: linear-gradient(#cdc8bb, transparent); }
+.reel:after { background: linear-gradient(transparent, #cdc8bb); }
+.reel-drop img { border: 2px solid var(--ink); filter: grayscale(.15) saturate(.8); }
+.reel-number,.reel-coupon { color: var(--ink); }
+.reel-coupon { text-decoration: underline 3px var(--red); }
+.payline { border: 3px dashed var(--ink); background: transparent; box-shadow: none; }
+.payline span { background: var(--ink); }
+.payline b { background: var(--ink); }
+.skip-btn { border: 2px solid var(--ink); background: #fffdf6; color: var(--ink); }
+.machine-console { border-top: 3px solid var(--ink); background: #fffdf6; }
+.console-display { border: 2px solid var(--ink); background: var(--ink); color: #fffdf6; }
+.slot-mouth { border: 2px solid var(--ink); background: #fffdf6; box-shadow: inset 0 5px 0 #17171422; }
+.lever > span { border: 3px solid var(--ink); background: var(--gold); box-shadow: 4px 5px 0 var(--ink); }
+.lever i { border: 2px solid var(--ink); background: #fffdf6; }
+.lever b { border: 3px solid var(--ink); background: #fffdf6; }
+.lever-unit em { color: var(--ink); }
+.side-panel {
+  border: 3px solid var(--ink);
+  border-radius: 4px 11px 3px 8px;
+  background: #fffdf6;
+  box-shadow: 8px 8px 0 var(--ink);
+  transform: rotate(.4deg);
+}
+.side-panel .eyebrow { color: var(--red); }
+.side-panel h3 { font-family: Georgia, "Songti SC", serif; }
+.tiers > div { border: 2px solid var(--ink); background: #fff; }
+.tiers > div.active { border-color: var(--ink); background: var(--gold); color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+.tiers span,.entry-card span,.entry-card p { color: #565750; }
+.entry-card { border: 2px solid var(--ink); background: #dcebdd; }
+.entry-card strong { color: var(--ink); }
+.promise { border-top: 2px dashed var(--ink); }
+.promise i { border: 2px solid var(--ink); background: #cae8b9; color: var(--ink); }
+.promise p,.fineprint { color: #555650; }
+.promise strong { color: var(--ink); }
+.coupon-panel {
+  border: 3px solid var(--ink);
+  background: #fffdf6;
+  box-shadow: 12px 12px 0 var(--ink);
+}
+.coupon-result .eyebrow { color: var(--ink); }
+.coupon-result h2 { font-family: Georgia, "Songti SC", serif; font-weight: 400; }
+.coupon {
+  border: 3px solid var(--ink);
+  border-radius: 3px 10px 4px 8px;
+  background: var(--ink);
+  box-shadow: 6px 6px 0 var(--red);
+}
+.coupon-actions button { border: 2px solid var(--ink); background: var(--ink); }
+.coupon-actions button + button { background: #fffdf6; }
+.result-shoe { background: #dce6f2; border-left: 3px solid var(--ink); }
+.result-shoe img { border: 3px solid var(--ink); filter: saturate(.82); mix-blend-mode: normal; transform: rotate(-2deg); box-shadow: 7px 7px 0 var(--ink); }
+.result-shoe h3 { font-family: Georgia, "Songti SC", serif; }
+.draw-result-badge { border: 2px solid var(--ink); background: var(--gold); color: var(--ink) !important; border-radius: 2px 8px 3px 7px; transform: rotate(2deg); }
+.confetti { opacity: .18; filter: grayscale(1); }
+.machine.reward { box-shadow: 10px 11px 0 var(--ink), 18px 19px 0 var(--gold); }
+footer { border-top: 2px solid var(--ink); color: #555650; }
 @media (max-width: 950px) {
   .game-layout {
     grid-template-columns: 1fr;
