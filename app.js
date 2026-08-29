@@ -328,6 +328,7 @@ function showCoupon() {
     : "NOT THIS TIME · 本次未中签";
   $("#drawResultBadge").className = `draw-result-badge ${drawWon ? "won" : "lost"}`;
   $("#statusText").textContent = "DRAW COMPLETE · COUPON SECURED";
+  $("#machineTitle").textContent = "小票打印完成";
   $("#stageDisplay").textContent = "CLEARED";
   lever.classList.add("locked");
   $("#couponPanel").classList.remove("hidden");

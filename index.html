@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#07090c" />
     <meta name="description" content="选择限量球鞋并提交模拟抽签，完成挑战100%领取优惠券。" />
     <title>SOLE SIGNAL｜球鞋限量发售抽签</title>
-    <link rel="stylesheet" href="styles.css?v=vending01" />
+    <link rel="stylesheet" href="styles.css?v=vending02" />
   </head>
   <body>
     <div class="ambient a1"></div>
@@ -55,6 +55,10 @@
           </div>
 
           <div class="machine-screen">
+            <div class="vending-lane-strip" aria-hidden="true">
+              <span>01</span><span>02</span><span>03</span><span>04</span>
+              <b>PRODUCT WINDOW</b>
+            </div>
             <section id="welcomeView" class="view welcome-view">
               <div class="drop-head">
                 <p class="eyebrow">SELECT PRODUCT LANE</p>
@@ -153,6 +157,43 @@
               ><em>VEND ENTRY</em>
             </div>
           </div>
+
+          <section id="couponPanel" class="coupon-panel hidden">
+            <div class="ticket-top">
+              <span>SOLE SIGNAL VENDING UNIT 01</span><b>REWARD RECEIPT</b>
+            </div>
+            <div class="confetti" aria-hidden="true"></div>
+            <div class="coupon-result">
+              <p class="eyebrow" id="couponRarity">CHALLENGE COMPLETE</p>
+              <h2 id="resultTitle">抽签结果</h2>
+              <p id="resultSummary"></p>
+              <div class="coupon">
+                <div class="coupon-left">
+                  <span>SOLE SIGNAL</span
+                  ><strong><small>¥</small><b id="couponValue">5</b></strong
+                  ><em>球鞋专属优惠券</em>
+                </div>
+                <div class="coupon-right">
+                  <span>券码</span><strong id="couponCode">SOLE-0000</strong
+                  ><small>满 ¥199 可用 · 体验券</small>
+                </div>
+              </div>
+              <div class="coupon-actions">
+                <button id="copyBtn">复制券码 <span>↗</span></button
+                ><button id="replayBtn">娱乐模式再玩一次 <span>↻</span></button>
+              </div>
+              <small class="claim-lock"
+                >本次奖励已锁定。重新挑战仅供娱乐，不会重复发券。</small
+              >
+            </div>
+            <div class="result-shoe">
+              <img id="rewardShoe" alt="你选择的目标球鞋" /><span
+                >YOUR SELECTED DROP</span
+              >
+              <h3 id="rewardShoeName"></h3>
+              <b id="drawResultBadge" class="draw-result-badge">ENTRY PENDING</b>
+            </div>
+          </section>
         </div>
 
         <aside class="side-panel">
@@ -185,44 +226,11 @@
         </aside>
       </section>
 
-      <section id="couponPanel" class="coupon-panel hidden">
-        <div class="confetti" aria-hidden="true"></div>
-        <div class="coupon-result">
-          <p class="eyebrow" id="couponRarity">CHALLENGE COMPLETE</p>
-          <h2 id="resultTitle">抽签结果</h2>
-          <p id="resultSummary"></p>
-          <div class="coupon">
-            <div class="coupon-left">
-              <span>SOLE SIGNAL</span
-              ><strong><small>¥</small><b id="couponValue">5</b></strong
-              ><em>球鞋专属优惠券</em>
-            </div>
-            <div class="coupon-right">
-              <span>券码</span><strong id="couponCode">SOLE-0000</strong
-              ><small>满 ¥199 可用 · 体验券</small>
-            </div>
-          </div>
-          <div class="coupon-actions">
-            <button id="copyBtn">复制券码 <span>↗</span></button
-            ><button id="replayBtn">娱乐模式再玩一次 <span>↻</span></button>
-          </div>
-          <small class="claim-lock"
-            >本次奖励已锁定。重新挑战仅供娱乐，不会重复发券。</small
-          >
-        </div>
-        <div class="result-shoe">
-          <img id="rewardShoe" alt="你选择的目标球鞋" /><span
-            >YOUR SELECTED DROP</span
-          >
-          <h3 id="rewardShoeName"></h3>
-          <b id="drawResultBadge" class="draw-result-badge">ENTRY PENDING</b>
-        </div>
-      </section>
     </main>
     <div id="toast" class="toast">券码已复制</div>
     <footer>
       <span>SOLE SIGNAL © 2026</span><span>100% REWARD · DEMO EXPERIENCE</span>
     </footer>
-    <script src="app.js?v=vending01"></script>
+    <script src="app.js?v=vending02"></script>
   </body>
 </html>

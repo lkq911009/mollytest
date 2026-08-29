@@ -1911,3 +1911,350 @@ footer { border-top: 2px solid var(--ink); color: #555650; }
   .coupon-panel:before { left: 14px; top: 11px; }
   .coupon-left { border-right: 0; border-bottom-color: var(--ink); }
 }
+
+/* VENDING UNIT 01 — structural rebuild */
+.game-layout {
+  grid-template-columns: minmax(0, 1fr) 276px;
+  gap: 0;
+  align-items: start;
+}
+.machine {
+  z-index: 2;
+  overflow: visible;
+  border-radius: 10px 0 14px 14px;
+  box-shadow: 13px 14px 0 var(--ink);
+}
+.machine-top {
+  background:
+    linear-gradient(90deg, #fffdf6 0 72%, #f1dc5f 72% 100%);
+}
+.machine-top h2 {
+  letter-spacing: .08em;
+}
+.machine-screen {
+  position: relative;
+  padding-top: 48px;
+  overflow: hidden;
+  background:
+    linear-gradient(115deg, #ffffff2e 0 13%, transparent 13% 28%, #ffffff26 28% 34%, transparent 34%),
+    linear-gradient(#cbd8d9e8,#dce3dfe8);
+  box-shadow:
+    inset 0 0 0 9px #b9c1bd,
+    inset 0 0 38px #29413b33;
+}
+.machine-screen:after {
+  content: "";
+  position: absolute;
+  z-index: 9;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, #fff7 0 8%, transparent 8% 29%, #fff3 29% 34%, transparent 34%);
+  opacity: .32;
+}
+.vending-lane-strip {
+  position: absolute;
+  z-index: 12;
+  left: 18px;
+  right: 18px;
+  top: 13px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.vending-lane-strip span {
+  display: grid;
+  width: 29px;
+  height: 24px;
+  place-items: center;
+  border: 2px solid var(--ink);
+  background: #fffdf6;
+  font: 900 9px/1 monospace;
+}
+.vending-lane-strip span:first-child { background: var(--gold); }
+.vending-lane-strip b {
+  margin-left: auto;
+  font: 800 8px/1 monospace;
+  letter-spacing: .16em;
+}
+.welcome-view {
+  min-height: 1050px;
+  padding: 24px 30px 34px;
+  background: transparent;
+}
+.drop-head {
+  margin-bottom: 14px;
+  padding: 14px 18px;
+  border: 3px solid var(--ink);
+  background: #fffdf6;
+  box-shadow: 5px 5px 0 var(--ink);
+}
+.drop-head:after { margin-right: 6px; }
+.drop-choices {
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 14px;
+  border: 4px solid var(--ink);
+  background: #b8c7c8;
+  box-shadow: inset 0 0 0 7px #e7ece8;
+}
+.drop-choices button {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(150px, .55fr);
+  align-items: center;
+  min-height: 170px;
+  padding: 10px 18px 12px 12px;
+  overflow: hidden;
+  background:
+    linear-gradient(#ffffffea,#ffffffea),
+    repeating-linear-gradient(90deg, transparent 0 18px, #17171415 19px);
+}
+.drop-choices button:before {
+  right: 13px;
+  top: 13px;
+  width: 38px;
+  height: 38px;
+  background: var(--gold);
+  font-size: 13px;
+}
+.drop-choices button:after {
+  left: 20px;
+  right: 20px;
+  bottom: 12px;
+  height: 12px;
+  border-width: 2px;
+  background:
+    repeating-radial-gradient(ellipse at center, transparent 0 4px, var(--ink) 5px 6px, transparent 7px 10px);
+}
+.drop-choices img {
+  grid-row: 1;
+  grid-column: 1;
+  width: 100%;
+  height: 140px;
+  padding: 4px 8px 18px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.drop-choices button > span {
+  grid-row: 1;
+  grid-column: 2;
+  align-self: center;
+  padding: 28px 8px 18px 18px;
+  text-align: left;
+}
+.drop-choices button > span b {
+  display: block;
+  font: 400 24px/1.12 Georgia, "Songti SC", serif;
+}
+.drop-choices button > span small {
+  display: block;
+  margin-top: 11px;
+}
+.drop-choices button.selected {
+  box-shadow: inset 0 0 0 7px var(--gold);
+}
+.drop-choices button.selected:after {
+  background:
+    repeating-radial-gradient(ellipse at center, transparent 0 4px, var(--red) 5px 6px, transparent 7px 10px);
+}
+.size-picker {
+  background: #f4e067;
+  box-shadow: 5px 5px 0 var(--ink);
+}
+.side-panel {
+  position: relative;
+  z-index: 1;
+  min-height: 735px;
+  margin-top: 72px;
+  padding: 28px 20px;
+  border-left: 0;
+  border-radius: 0 10px 10px 0;
+  background: #d0cec5;
+  box-shadow: 12px 14px 0 var(--ink);
+  transform: none;
+}
+.side-panel:after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  height: 7px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--ink);
+}
+.vending-keypad {
+  grid-template-columns: repeat(3,1fr);
+}
+.vending-keypad:after,
+.vending-keypad:before {
+  display: grid;
+  height: 35px;
+  place-items: center;
+  border: 2px solid #fffdf6;
+  background: #e7e5db;
+  font: 900 12px/1 monospace;
+}
+.vending-keypad:before { content: "C"; }
+.vending-keypad:after { content: "OK"; background: var(--gold); }
+.question-view,
+.unlock-view {
+  min-height: 610px;
+  margin: 20px;
+  background:
+    linear-gradient(#fffdf6f2,#fffdf6f2),
+    repeating-linear-gradient(0deg,transparent 0 28px,#17171412 29px);
+}
+.reel-view {
+  min-height: 610px;
+  margin: 20px;
+  border: 3px solid var(--ink);
+  box-shadow: 7px 8px 0 var(--ink);
+}
+.machine-console {
+  z-index: 4;
+  border-radius: 0 0 10px 10px;
+}
+.slot-mouth {
+  overflow: visible;
+}
+.machine.reward .slot-mouth:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 13%;
+  right: 13%;
+  top: 22px;
+  height: 76px;
+  border-inline: 2px dashed var(--ink);
+  background: #fffdf6;
+}
+.coupon-panel {
+  position: relative;
+  z-index: 2;
+  grid-template-columns: minmax(0, 1.2fr) minmax(210px, .8fr);
+  width: calc(100% - 92px);
+  margin: -3px auto 46px;
+  border: 3px solid var(--ink);
+  border-top: 0;
+  border-radius: 0;
+  background: #fffdf6;
+  box-shadow: 8px 10px 0 #17171438;
+  transform-origin: 50% 0;
+  animation: receipt-dispense .9s cubic-bezier(.16,.75,.24,1) both;
+}
+.coupon-panel:before { content: none; }
+.coupon-panel:after {
+  content: "";
+  position: absolute;
+  left: -3px;
+  right: -3px;
+  bottom: -14px;
+  height: 14px;
+  background:
+    linear-gradient(135deg, #fffdf6 7px, transparent 0) 0 0/14px 14px repeat-x,
+    linear-gradient(225deg, #fffdf6 7px, transparent 0) 7px 0/14px 14px repeat-x;
+}
+.ticket-top {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  padding: 13px 20px 11px;
+  border-top: 3px dashed var(--ink);
+  border-bottom: 2px dashed var(--ink);
+  font: 800 8px/1 monospace;
+  letter-spacing: .15em;
+}
+.ticket-top b { color: var(--red); }
+.coupon-result {
+  padding: 42px 32px 36px;
+}
+.coupon-result h2 {
+  font-size: clamp(40px,5vw,62px);
+}
+.result-shoe {
+  min-height: 430px;
+  padding: 26px;
+  border-left: 2px dashed var(--ink);
+  background:
+    linear-gradient(#fffdf6e8,#fffdf6e8),
+    repeating-linear-gradient(0deg,transparent 0 17px,#17171412 18px);
+}
+.result-shoe img {
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+  filter: saturate(.65) contrast(.94);
+  box-shadow: 5px 6px 0 var(--ink);
+}
+.coupon {
+  box-shadow: 5px 6px 0 var(--red);
+}
+@keyframes receipt-dispense {
+  0% {
+    max-height: 0;
+    opacity: .2;
+    transform: translateY(-85px) scaleY(.12);
+    clip-path: inset(0 0 88% 0);
+  }
+  62% { opacity: 1; }
+  100% {
+    max-height: 900px;
+    transform: translateY(0) scaleY(1);
+    clip-path: inset(0);
+  }
+}
+
+@media (max-width: 950px) {
+  .game-layout { grid-template-columns: 1fr; gap: 18px; }
+  .machine { border-radius: 10px 10px 14px 14px; }
+  .side-panel {
+    min-height: 0;
+    margin: 0;
+    border-left: 3px solid var(--ink);
+    border-radius: 8px;
+  }
+}
+@media (max-width: 640px) {
+  .machine-screen { padding-top: 42px; }
+  .vending-lane-strip { left: 11px; right: 11px; top: 10px; }
+  .vending-lane-strip b { display: none; }
+  .welcome-view { min-height: 900px; padding: 14px 11px 24px; }
+  .drop-head { padding: 12px; }
+  .drop-choices { gap: 8px; padding: 8px; }
+  .drop-choices button {
+    grid-template-columns: minmax(0,1.25fr) minmax(90px,.75fr);
+    min-height: 138px;
+    padding: 6px 8px;
+  }
+  .drop-choices img { height: 112px; padding-bottom: 17px; }
+  .drop-choices button > span { padding: 21px 5px 13px 9px; }
+  .drop-choices button > span b { font-size: 17px; }
+  .drop-choices button > span small { margin-top: 7px; font-size: 6px; }
+  .drop-choices button:before {
+    right: 7px;
+    top: 7px;
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+  .drop-choices button:after { left: 10px; right: 10px; bottom: 8px; height: 9px; }
+  .question-view,
+  .unlock-view,
+  .reel-view {
+    min-height: 500px;
+    margin: 10px;
+  }
+  .coupon-panel {
+    grid-template-columns: 1fr;
+    width: calc(100% - 30px);
+    margin-bottom: 33px;
+  }
+  .ticket-top { flex-direction: column; gap: 6px; padding-inline: 14px; }
+  .coupon-result { padding: 39px 20px 26px; }
+  .result-shoe {
+    min-height: 310px;
+    border-left: 0;
+    border-top: 2px dashed var(--ink);
+  }
+}
