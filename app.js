@@ -273,16 +273,6 @@ function stopReel(col, target) {
   beep(300 + col * 100, 0.14);
   if (col === 2) showCoupon();
 }
-function skipSpin() {
-  if (!spinning) return;
-  clearSpin();
-  [selectedDrop, selectedSize, drawWon ? 1 : 2].forEach((target, col) => {
-    const reel = document.querySelector(`[data-reel="${col}"]`);
-    reel.classList.remove("spinning");
-    setReel(col, target);
-  });
-  showCoupon();
-}
 function showCoupon() {
   clearSpin();
   spinning = false;
@@ -344,7 +334,6 @@ function showCoupon() {
 $("#startBtn").onclick = start;
 $("#nextBtn").onclick = next;
 lever.onclick = spin;
-$("#skipBtn").onclick = skipSpin;
 document.querySelectorAll("#dropChoices button").forEach((button, index) => {
   button.onclick = () => {
     selectedDrop = index;

@@ -2170,7 +2170,8 @@ footer { border-top: 2px solid var(--ink); color: #555650; }
   padding: 42px 32px 36px;
 }
 .coupon-result h2 {
-  font-size: clamp(40px,5vw,62px);
+  font-size: clamp(38px,4.2vw,52px);
+  line-height: 1.04;
 }
 .result-shoe {
   min-height: 430px;
@@ -2257,4 +2258,20 @@ footer { border-top: 2px solid var(--ink); color: #555650; }
     border-left: 0;
     border-top: 2px dashed var(--ink);
   }
+}
+
+/* Simplified interaction hierarchy: every visible control has a function */
+.machine:before { content: none; }
+.machine-top { padding: 22px 28px 18px; }
+.machine-screen { padding-top: 0; }
+.drop-choices button:after { content: none; }
+.drop-choices img { padding: 4px 8px; }
+.drop-choices button > span { padding-bottom: 8px; }
+.side-panel:before { content: "REWARD PANEL"; }
+
+@media (max-width: 640px) {
+  .machine-top { padding: 17px 15px 14px; }
+  .machine-screen { padding-top: 0; }
+  .drop-choices img { padding: 3px 5px; }
+  .drop-choices button > span { padding-bottom: 6px; }
 }
