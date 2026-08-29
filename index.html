@@ -7,9 +7,9 @@
       content="width=device-width,initial-scale=1,viewport-fit=cover"
     />
     <meta name="theme-color" content="#07090c" />
-    <meta name="description" content="选择限量球鞋并提交模拟抽签，完成挑战100%领取优惠券。" />
+    <meta name="description" content="选择限量球鞋并提交发售签，完成挑战100%领取优惠券。" />
     <title>SOLE SIGNAL｜球鞋限量发售抽签</title>
-    <link rel="stylesheet" href="styles.css?v=vending04" />
+    <link rel="stylesheet" href="styles.css?v=vending05" />
   </head>
   <body>
     <div class="ambient a1"></div>
@@ -175,6 +175,8 @@
               </div>
               <div class="coupon-actions">
                 <button id="copyBtn">复制券码 <span>↗</span></button
+                ><button id="accessBtn" class="hidden"
+                  >查看购买资格 <span>↗</span></button
                 ><button id="replayBtn">娱乐模式再玩一次 <span>↻</span></button>
               </div>
               <small class="claim-lock"
@@ -187,6 +189,21 @@
               >
               <h3 id="rewardShoeName"></h3>
               <b id="drawResultBadge" class="draw-result-badge">ENTRY PENDING</b>
+              <div id="purchaseAccess" class="purchase-access hidden">
+                <div class="access-head">
+                  <span>PURCHASE ACCESS PASS</span><b>中签有效</b>
+                </div>
+                <small>购买资格编号</small>
+                <strong id="accessCode">PASS-000000</strong>
+                <div class="access-meta">
+                  <span>目标鞋款与尺码</span
+                  ><b id="accessProduct">等待开奖</b>
+                </div>
+                <button id="copyAccessBtn">复制资格编号 <span>↗</span></button>
+                <p>
+                  此凭证需与中签账号一致，并由活动服务端在结算时校验；截图或复制编号不能单独作为购买依据。
+                </p>
+              </div>
             </div>
           </section>
         </div>
@@ -213,7 +230,7 @@
             </p>
           </div>
           <p id="claimNote" class="fineprint">
-            本页面为模拟抽签，不代表真实库存或购买资格。正式活动必须由后端统一开奖并校验账号、尺码与库存。
+            当前页面展示抽签与凭证流程，不代表真实库存。正式活动必须由后端统一开奖，并校验账号、资格编号、尺码与库存。
           </p>
         </aside>
       </section>
@@ -221,8 +238,8 @@
     </main>
     <div id="toast" class="toast">券码已复制</div>
     <footer>
-      <span>SOLE SIGNAL © 2026</span><span>100% REWARD · DEMO EXPERIENCE</span>
+      <span>SOLE SIGNAL © 2026</span><span>100% REWARD · CAMPAIGN PREVIEW</span>
     </footer>
-    <script src="app.js?v=vending04"></script>
+    <script src="app.js?v=vending05"></script>
   </body>
 </html>

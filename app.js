@@ -308,6 +308,9 @@ function showCoupon() {
   } catch {}
   if (saved) entertainmentMode = true;
   const code = `SOLE${value}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+  const accessCode = result.won
+    ? `PASS-${Date.now().toString(36).slice(-6).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`
+    : "";
   if (!saved && !entertainmentMode) {
     saved = {
       value,
@@ -316,28 +319,37 @@ function showCoupon() {
       shoe: resultDrop.id,
       size: resultSize,
       drawWon: result.won,
+      accessCode,
       date: new Date().toISOString(),
     };
     localStorage.setItem("soleSignalClaim", JSON.stringify(saved));
   }
   $("#couponValue").textContent = entertainmentMode ? value : saved.value;
   $("#couponCode").textContent = entertainmentMode
-    ? `DEMO-${value}-${code.slice(-5)}`
+    ? `PLAY-${value}-${code.slice(-5)}`
     : saved.code;
   const modeCopy = entertainmentMode ? " · 娱乐模式不重复发券" : "";
   $("#resultSummary").textContent = result.won
-    ? `${resultDrop.name} ${resultSize} 码模拟中签 · ¥${value} 优惠券同时到账${modeCopy}`
-    : `本次未获得模拟购买资格 · ¥${value} 保底优惠券已经到账${modeCopy}`;
+    ? `${resultDrop.name} ${resultSize} 码恭喜中签 · ¥${value} 优惠券同时到账${modeCopy}`
+    : `本次未获得购买资格 · ¥${value} 保底优惠券已经到账${modeCopy}`;
   $("#couponRarity").textContent = result.won
     ? "GOT ’EM · PURCHASE ACCESS"
     : "NOT THIS TIME · COUPON SECURED";
-  $("#resultTitle").textContent = result.won ? "模拟中签！" : "保底奖励已到账";
+  $("#resultTitle").textContent = result.won ? "恭喜中签！" : "保底奖励已到账";
   $("#rewardShoe").src = dropPath(resultDrop);
   $("#rewardShoeName").textContent = `${resultDrop.name} · ${resultSize} 码`;
   $("#drawResultBadge").textContent = result.won
-    ? "GOT ’EM · 模拟购买资格"
+    ? "GOT ’EM · 购买资格已锁定"
     : "NOT THIS TIME · 本次未中签";
   $("#drawResultBadge").className = `draw-result-badge ${result.won ? "won" : "lost"}`;
+  $("#accessBtn").classList.toggle("hidden", !result.won);
+  $("#purchaseAccess").classList.add("hidden");
+  if (result.won) {
+    $("#accessCode").textContent = entertainmentMode
+      ? `PREVIEW-${accessCode.slice(-11)}`
+      : saved.accessCode || accessCode;
+    $("#accessProduct").textContent = `${resultDrop.name} · ${resultSize} 码`;
+  }
   $("#statusText").textContent = "PRINTING REWARD RECEIPT...";
   $("#machineTitle").textContent = "正在打印奖励小票";
   $("#stageDisplay").textContent = "PRINTING";
@@ -399,6 +411,8 @@ $("#replayBtn").onclick = () => {
   lever.classList.add("locked");
   $("#couponPanel").classList.add("hidden");
   $("#couponPanel").classList.remove("printing", "printed");
+  $("#accessBtn").classList.add("hidden");
+  $("#purchaseAccess").classList.add("hidden");
   $("#machineTitle").textContent = "球鞋限量发售售卖机";
   $("#statusText").textContent = "SELECT A DROP · CHOOSE YOUR SIZE";
   $("#machineScore").textContent = "READY";
@@ -407,16 +421,29 @@ $("#replayBtn").onclick = () => {
   renderMap();
   window.scrollTo({ top: $(".journey").offsetTop - 15, behavior: "smooth" });
 };
+function showToast(message) {
+  const toast = $("#toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 1600);
+}
 $("#copyBtn").onclick = () =>
-  navigator.clipboard.writeText($("#couponCode").textContent).then(() => {
-    const toast = $("#toast");
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 1600);
-  });
+  navigator.clipboard
+    .writeText($("#couponCode").textContent)
+    .then(() => showToast("券码已复制"));
+$("#accessBtn").onclick = () => {
+  const pass = $("#purchaseAccess");
+  pass.classList.remove("hidden");
+  pass.scrollIntoView({ behavior: "smooth", block: "center" });
+};
+$("#copyAccessBtn").onclick = () =>
+  navigator.clipboard
+    .writeText($("#accessCode").textContent)
+    .then(() => showToast("资格编号已复制"));
 
 if (entertainmentMode) {
   $("#claimNote").textContent =
-    "娱乐模式：首次奖励已经锁定，本局只展示模拟券，不会再次发券。";
+    "娱乐模式：首次奖励已经锁定，本局只展示优惠券，不会再次发券。";
 }
 $("#soundBtn").onclick = () => {
   soundOn = !soundOn;
