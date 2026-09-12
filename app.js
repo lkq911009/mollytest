@@ -50,6 +50,15 @@ let timers = [],
   drawWon = false,
   drawResult = null,
   entertainmentMode = false;
+let audioContext;
+let stopReceiptFollow = () => {};
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+function later(callback, delay) {
+  const timer = setTimeout(callback, delay);
+  stops.push(timer);
+  return timer;
+}
 
 try {
   entertainmentMode = Boolean(localStorage.getItem("soleSignalClaim"));
@@ -73,6 +82,35 @@ function wrap(index, length) {
 function updateEntry() {
   $("#entryShoeName").textContent = drops[selectedDrop].name;
   $("#entrySize").textContent = sizes[selectedSize];
+  document.querySelectorAll("#dropChoices button").forEach((button, index) => {
+    button.classList.toggle("selected", index === selectedDrop);
+    button.setAttribute("aria-pressed", String(index === selectedDrop));
+    button.disabled = phase !== "intro";
+  });
+  document.querySelectorAll("#sizeChoices button").forEach((button, index) => {
+    button.classList.toggle("selected", index === selectedSize);
+    button.setAttribute("aria-pressed", String(index === selectedSize));
+    button.disabled = phase !== "intro";
+  });
+}
+function syncMachine() {
+  machine.dataset.phase = phase;
+  $("#startBtn").classList.toggle("hidden", phase !== "intro");
+  lever.classList.toggle("hidden", !["unlock", "reel"].includes(phase));
+  lever.disabled = phase !== "unlock";
+  lever.classList.toggle("locked", lever.disabled);
+  $("#actionNote").classList.toggle("hidden", !["quiz", "printing", "done"].includes(phase));
+  $("#actionNote").textContent = phase === "quiz"
+    ? "请在上方屏幕选择答案 ↑"
+    : phase === "printing" ? "正在出纸，请稍候 ↓" : "好礼已送达，请收好你的小票 ↓";
+  $("#bannerText").textContent = {
+    intro: "下一双心动，从这里开始。",
+    quiz: "多答对一题，好礼升一级。",
+    unlock: "你的好礼，准备就绪。",
+    reel: "一点好运，正在发生。",
+    printing: "正在为你打印好礼。",
+    done: "谢谢参与，下次再来。",
+  }[phase];
 }
 function showView(id) {
   document.querySelectorAll(".view").forEach((v) => v.classList.add("hidden"));
@@ -81,9 +119,10 @@ function showView(id) {
 function beep(freq = 220, duration = 0.07) {
   if (!soundOn) return;
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)(),
+    const ctx = audioContext ||= new (window.AudioContext || window.webkitAudioContext)(),
       osc = ctx.createOscillator(),
       gain = ctx.createGain();
+    if (ctx.state === "suspended") ctx.resume().catch(() => {});
     osc.frequency.value = freq;
     gain.gain.setValueAtTime(0.04, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
@@ -91,6 +130,7 @@ function beep(freq = 220, duration = 0.07) {
     gain.connect(ctx.destination);
     osc.start();
     osc.stop(ctx.currentTime + duration);
+    osc.onended = () => { osc.disconnect(); gain.disconnect(); };
   } catch {}
 }
 
@@ -114,6 +154,7 @@ function renderMap() {
           ? "三关完成 · 奖励档位已锁定"
           : phase === "printing"
             ? "正在打印奖励小票"
+            : phase === "reel" ? "正在揭晓发售签"
             : "优惠券已经领取";
   document
     .querySelectorAll("#tiers>div")
@@ -124,9 +165,11 @@ function renderMap() {
     .querySelectorAll("#charge i")
     .forEach((x, i) => x.classList.toggle("on", i < answers.length));
   updateEntry();
+  syncMachine();
 }
 
 function start() {
+  if (phase !== "intro") return;
   phase = "quiz";
   step = 0;
   score = 0;
@@ -134,11 +177,12 @@ function start() {
   lever.classList.add("locked");
   machine.classList.remove("reward");
   $("#couponPanel").classList.add("hidden");
-  $("#machineTitle").textContent = "售卖机资格挑战";
+  $("#machineTitle").textContent = "球鞋知识挑战";
   $("#statusText").textContent = "ENTRY LOCKED · START CHALLENGE";
   $("#stageDisplay").textContent = "LEVEL 01";
   renderQuestion();
   renderMap();
+  $(".screen-housing").scrollIntoView({ behavior: reducedMotion.matches ? "instant" : "smooth", block: "start" });
 }
 function renderQuestion() {
   const q = questions[step];
@@ -162,7 +206,7 @@ function renderQuestion() {
   renderMap();
 }
 function answer(choice) {
-  if (answers[step] !== undefined) return;
+  if (phase !== "quiz" || answers[step] !== undefined) return;
   const q = questions[step],
     ok = choice === q.correct;
   answers[step] = ok;
@@ -173,7 +217,7 @@ function answer(choice) {
     else if (i === choice) b.classList.add("wrong");
   });
   $("#feedbackIcon").textContent = ok ? "✓" : "×";
-  $("#feedbackIcon").style.color = ok ? "#26a957" : "#e54e39";
+  $("#feedbackIcon").style.color = ok ? "#50603d" : "#934c3b";
   $("#feedbackTitle").textContent = ok
     ? "回答正确 · 奖励升级"
     : "差一点 · 继续闯关";
@@ -189,7 +233,7 @@ function answer(choice) {
   renderMap();
 }
 function next() {
-  if (answers[step] === undefined) return;
+  if (phase !== "quiz" || answers[step] === undefined) return;
   if (step < 2) {
     step++;
     renderQuestion();
@@ -202,8 +246,8 @@ function unlock() {
     value = couponFor(score);
   $("#unlockPercent").textContent = `${pct}%`;
   $("#unlockCopy").textContent =
-    `货道：${String(selectedDrop + 1).padStart(2, "0")} · ${drops[selectedDrop].name}，尺码 ${sizes[selectedSize]}。¥${value} 优惠券小票已锁定，验证结果不会改变券额。`;
-  $("#machineTitle").textContent = "限量发售验证终端";
+    `已锁定 ¥${value} 优惠券。接下来揭晓 ${drops[selectedDrop].name} · ${sizes[selectedSize]} 码的发售签，中签与否都不影响券额。`;
+  $("#machineTitle").textContent = "挑战完成 · 好礼已锁定";
   $("#statusText").textContent = "ENTRY READY · SUBMIT THE DRAW";
   $("#machineScore").textContent = `¥${value} LOCKED`;
   $("#stageDisplay").textContent = "REVEAL";
@@ -235,11 +279,12 @@ function renderReels(indices = [0, 3, 0]) {
   $("#reels").innerHTML = indices
     .map(
       (n, col) =>
-        `<div class="reel" data-reel="${col}"><div class="reel-items">${[-1, 0, 1].map((off) => `<div class="reel-item">${reelCell(col, n + off)}</div>`).join("")}</div></div>`,
+        `<div class="reel" data-reel="${col}"><div class="reel-items">${[-1, 0, 1].map((off) => `<div class="reel-item ${off === 0 ? "is-result" : ""}">${reelCell(col, n + off)}</div>`).join("")}</div></div>`,
     )
     .join("");
 }
 function clearSpin() {
+  stopReceiptFollow();
   timers.forEach(clearInterval);
   stops.forEach(clearTimeout);
   timers = [];
@@ -252,6 +297,8 @@ function spin() {
   showView("#reelView");
   renderReels();
   lever.classList.add("pulled");
+  $("#machineTitle").textContent = "发售签正在揭晓";
+  $("#stageDisplay").textContent = "DRAWING";
   $("#statusText").textContent = "VALIDATING ENTRY · DRAWING...";
   drawWon = Math.random() < 0.25;
   drawResult = {
@@ -275,6 +322,7 @@ function spin() {
     );
     stops[col] = setTimeout(() => stopReel(col, targets[col]), 850 + col * 430);
   });
+  renderMap();
 }
 function stopReel(col, target) {
   clearInterval(timers[col]);
@@ -284,7 +332,7 @@ function stopReel(col, target) {
   beep(300 + col * 100, 0.14);
   if (col === 2) {
     $("#statusText").textContent = "RESULT LOCKED · PRINTING NEXT";
-    setTimeout(showCoupon, 850);
+    later(showCoupon, 850);
   }
 }
 function showCoupon() {
@@ -322,7 +370,7 @@ function showCoupon() {
       accessCode,
       date: new Date().toISOString(),
     };
-    localStorage.setItem("soleSignalClaim", JSON.stringify(saved));
+    try { localStorage.setItem("soleSignalClaim", JSON.stringify(saved)); } catch {}
   }
   $("#couponValue").textContent = entertainmentMode ? value : saved.value;
   $("#couponCode").textContent = entertainmentMode
@@ -343,6 +391,7 @@ function showCoupon() {
     : "NOT THIS TIME · 本次未中签";
   $("#drawResultBadge").className = `draw-result-badge ${result.won ? "won" : "lost"}`;
   $("#accessBtn").classList.toggle("hidden", !result.won);
+  $("#accessBtn").setAttribute("aria-expanded", "false");
   $("#purchaseAccess").classList.add("hidden");
   if (result.won) {
     $("#accessCode").textContent = entertainmentMode
@@ -354,23 +403,39 @@ function showCoupon() {
   $("#machineTitle").textContent = "正在打印奖励小票";
   $("#stageDisplay").textContent = "PRINTING";
   lever.classList.add("locked");
+  entertainmentMode = true;
   const panel = $("#couponPanel");
+  const feed = $("#receiptFeed");
+  feed.classList.remove("hidden", "complete");
+  feed.style.height = "0px";
   panel.classList.remove("hidden", "printing", "printed");
-  panel.classList.add("printing");
   renderMap();
-  setTimeout(
-    () =>
-      $(".slot-mouth").scrollIntoView({ behavior: "smooth", block: "center" }),
-    120,
-  );
-  setTimeout(() => {
-    phase = "done";
-    panel.classList.add("printed");
-    $("#statusText").textContent = "RECEIPT READY · COUPON SECURED";
-    $("#machineTitle").textContent = "小票打印完成";
-    $("#stageDisplay").textContent = "CLEARED";
-    renderMap();
-  }, 2400);
+  // Move to the outlet before feeding the paper, so the motion stays in view.
+  $(".slot-mouth").scrollIntoView({ behavior: reducedMotion.matches ? "instant" : "smooth", block: "start" });
+  later(() => {
+    feed.style.height = `${panel.offsetHeight}px`;
+    panel.classList.add("printing");
+    // Follow only the emerging edge; touch or wheel input immediately takes control.
+    const follow = setInterval(() => {
+      const overflow = feed.getBoundingClientRect().bottom - innerHeight + 36;
+      if (overflow > 0) window.scrollBy({ top: overflow, behavior: "instant" });
+    }, 100);
+    stopReceiptFollow = () => {
+      clearInterval(follow);
+      ["wheel", "touchstart", "pointerdown", "keydown"].forEach((event) => window.removeEventListener(event, stopReceiptFollow));
+    };
+    ["wheel", "touchstart", "pointerdown", "keydown"].forEach((event) => window.addEventListener(event, stopReceiptFollow, { passive: true }));
+    later(() => {
+      stopReceiptFollow();
+      phase = "done";
+      panel.classList.add("printed");
+      feed.classList.add("complete");
+      $("#statusText").textContent = "RECEIPT READY · COUPON SECURED";
+      $("#machineTitle").textContent = "小票打印完成";
+      $("#stageDisplay").textContent = "CLEARED";
+      renderMap();
+    }, reducedMotion.matches ? 50 : 2650);
+  }, reducedMotion.matches ? 30 : 450);
   beep(score === 3 ? 760 : 560, 0.35);
 }
 
@@ -379,6 +444,7 @@ $("#nextBtn").onclick = next;
 lever.onclick = spin;
 document.querySelectorAll("#dropChoices button").forEach((button, index) => {
   button.onclick = () => {
+    if (phase !== "intro") return;
     selectedDrop = index;
     document
       .querySelectorAll("#dropChoices button")
@@ -389,6 +455,7 @@ document.querySelectorAll("#dropChoices button").forEach((button, index) => {
 });
 document.querySelectorAll("#sizeChoices button").forEach((button, index) => {
   button.onclick = () => {
+    if (phase !== "intro") return;
     selectedSize = index;
     document
       .querySelectorAll("#sizeChoices button")
@@ -398,9 +465,11 @@ document.querySelectorAll("#sizeChoices button").forEach((button, index) => {
   };
 });
 $("#replayBtn").onclick = () => {
-  entertainmentMode = Boolean(localStorage.getItem("soleSignalClaim"));
+  clearSpin();
+  spinning = false;
+  try { entertainmentMode ||= Boolean(localStorage.getItem("soleSignalClaim")); } catch {}
   $("#claimNote").textContent = entertainmentMode
-    ? "娱乐模式：首次奖励已经锁定，本次成绩不会再次生成优惠券。"
+    ? "再次挑战仅供娱乐，不重复发券。购买资格及券码需经活动方确认后使用。"
     : $("#claimNote").textContent;
   phase = "intro";
   score = 0;
@@ -411,15 +480,18 @@ $("#replayBtn").onclick = () => {
   lever.classList.add("locked");
   $("#couponPanel").classList.add("hidden");
   $("#couponPanel").classList.remove("printing", "printed");
+  $("#receiptFeed").classList.add("hidden");
+  $("#receiptFeed").classList.remove("complete");
+  $("#receiptFeed").style.height = "0px";
   $("#accessBtn").classList.add("hidden");
   $("#purchaseAccess").classList.add("hidden");
-  $("#machineTitle").textContent = "球鞋限量发售售卖机";
+  $("#machineTitle").textContent = "选择心仪球鞋";
   $("#statusText").textContent = "SELECT A DROP · CHOOSE YOUR SIZE";
   $("#machineScore").textContent = "READY";
   $("#stageDisplay").textContent = "ENTRY";
   showView("#welcomeView");
   renderMap();
-  window.scrollTo({ top: $(".journey").offsetTop - 15, behavior: "smooth" });
+  machine.scrollIntoView({ behavior: reducedMotion.matches ? "instant" : "smooth", block: "start" });
 };
 function showToast(message) {
   const toast = $("#toast");
@@ -427,30 +499,35 @@ function showToast(message) {
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 1600);
 }
-$("#copyBtn").onclick = () =>
-  navigator.clipboard
-    .writeText($("#couponCode").textContent)
-    .then(() => showToast("券码已复制"));
+async function copyText(selector, message) {
+  try {
+    await navigator.clipboard.writeText($(selector).textContent);
+    showToast(message);
+  } catch {
+    showToast("复制未成功，请长按编号手动复制");
+  }
+}
+$("#copyBtn").onclick = () => copyText("#couponCode", "券码已复制");
 $("#accessBtn").onclick = () => {
   const pass = $("#purchaseAccess");
-  pass.classList.remove("hidden");
-  pass.scrollIntoView({ behavior: "smooth", block: "center" });
+  const expanded = pass.classList.contains("hidden");
+  pass.classList.toggle("hidden", !expanded);
+  $("#accessBtn").setAttribute("aria-expanded", String(expanded));
+  if (expanded) pass.scrollIntoView({ behavior: reducedMotion.matches ? "instant" : "smooth", block: "center" });
 };
-$("#copyAccessBtn").onclick = () =>
-  navigator.clipboard
-    .writeText($("#accessCode").textContent)
-    .then(() => showToast("资格编号已复制"));
+$("#copyAccessBtn").onclick = () => copyText("#accessCode", "资格编号已复制");
 
 if (entertainmentMode) {
   $("#claimNote").textContent =
-    "娱乐模式：首次奖励已经锁定，本局只展示优惠券，不会再次发券。";
+    "再次挑战仅供娱乐，不重复发券。购买资格及券码需经活动方确认后使用。";
 }
 $("#soundBtn").onclick = () => {
   soundOn = !soundOn;
-  $("#soundBtn").textContent = soundOn ? "SOUND ON" : "SOUND OFF";
+  $("#soundBtn").textContent = soundOn ? "声音 开" : "声音 关";
+  $("#soundBtn").setAttribute("aria-pressed", String(soundOn));
 };
 document.addEventListener("keydown", (e) => {
-  if (e.code === "Space" && !e.repeat && phase === "unlock") {
+  if (e.code === "Space" && !e.repeat && phase === "unlock" && !e.target.closest("button, a, summary, input, textarea, select")) {
     e.preventDefault();
     spin();
   }
