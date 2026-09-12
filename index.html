@@ -1,139 +1,102 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-    <meta name="theme-color" content="#752c29" />
-    <meta name="description" content="走进 SOLE SIGNAL 球鞋发售机，挑选心仪球鞋，完成三道挑战，领取专属好礼。" />
-    <title>SOLE SIGNAL｜复古球鞋发售机</title>
-    <link rel="icon" href="assets/arcade-mark.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=arcade01" />
-  </head>
-  <body>
-    <header class="site-header">
-      <a class="brand" href="./" aria-label="SOLE SIGNAL 首页">SOLE SIGNAL<span>®</span></a>
-      <span class="edition">THE SNEAKER ARCADE / VOL. 01</span>
-    </header>
-    <main>
-      <p class="page-caption">挑一双心头好，带一张好礼走。</p>
-      <section class="machine" id="machine" data-phase="intro" aria-label="球鞋发售机">
-        <div class="cabinet-rail rail-left" aria-hidden="true"></div>
-        <div class="cabinet-rail rail-right" aria-hidden="true"></div>
-
-        <div class="marquee">
-          <div class="marquee-frame">
-            <div class="bulbs bulbs-top" aria-hidden="true"></div>
-            <div class="bulbs bulbs-bottom" aria-hidden="true"></div>
-            <span class="marquee-kicker">SOLE SIGNAL</span>
-            <h1>球鞋发售机</h1>
-            <span class="marquee-subtitle">PICK A PAIR. TRY YOUR LUCK.</span>
-          </div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#762e2b" />
+  <meta name="description" content="挑选心仪球鞋，完成三道知识挑战，在 SOLE SIGNAL 复古发售机领取你的好礼。" />
+  <title>SOLE SIGNAL｜复古球鞋发售机</title>
+  <link rel="icon" href="assets/arcade-mark.svg" type="image/svg+xml" />
+  <link rel="preload" href="assets/arcade-cabinet.png" as="image" />
+  <link rel="stylesheet" href="styles.css?v=cabinet02" />
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="./">SOLE SIGNAL<span>®</span></a><span>THE SNEAKER ARCADE / VOL. 01</span></header>
+  <main>
+    <p class="page-caption">挑一双心头好，带一张好礼走。</p>
+    <section class="machine" id="machine" data-phase="intro" aria-label="球鞋发售机">
+      <img class="cabinet-art" src="assets/arcade-cabinet.png" alt="" width="887" height="1774" fetchpriority="high" />
+      <h1 class="sr-only">SOLE SIGNAL 球鞋发售机</h1>
+      <button id="soundBtn" class="sound-btn" type="button" aria-pressed="true" aria-label="开关游戏声音">声音 开</button>
+      <span id="machineTitle" class="sr-only">选择心仪球鞋</span>
+      <div class="screen-housing">
+        <div class="machine-screen">
+          <section id="welcomeView" class="view welcome-view" aria-label="选择球鞋">
+            <div id="dropChoices" class="drop-choices">
+              <button type="button" class="selected" data-shoe="silver-ribbon" aria-pressed="true"><img src="assets/shoes/drop-silver.jpg" alt="银缎丝带" /><span>银缎丝带</span><i aria-hidden="true">✓</i></button>
+              <button type="button" data-shoe="red-suede" aria-pressed="false"><img src="assets/shoes/drop-red.jpg" alt="赤红麂皮" /><span>赤红麂皮</span><i aria-hidden="true">✓</i></button>
+              <button type="button" data-shoe="woven-cream" aria-pressed="false"><img src="assets/shoes/drop-woven.jpg" alt="奶油编织" /><span>奶油编织</span><i aria-hidden="true">✓</i></button>
+              <button type="button" data-shoe="white-navy" aria-pressed="false"><img src="assets/shoes/drop-white-blue.jpg" alt="白蓝复古" /><span>白蓝复古</span><i aria-hidden="true">✓</i></button>
+            </div>
+          </section>
+          <section id="questionView" class="view question-view hidden">
+            <div class="question-meta"><span id="questionLevel"></span><b id="questionType"></b></div>
+            <h2 id="questionText"></h2>
+            <div id="answers" class="answers"></div>
+            <div id="feedback" class="feedback hidden" role="status">
+              <b id="feedbackIcon"></b><div><strong id="feedbackTitle"></strong><p id="feedbackText"></p></div>
+            </div>
+          </section>
+          <section id="unlockView" class="view unlock-view hidden">
+            <p class="screen-eyebrow">ALL LEVELS CLEARED</p>
+            <h2>挑战完成</h2>
+            <div class="unlock-ring"><span id="unlockPercent">0%</span><small>答题正确率</small></div>
+            <p id="unlockCopy"></p>
+          </section>
+          <section id="reelView" class="view reel-view hidden" aria-label="正在揭晓发售签">
+            <div class="reel-window"><div id="reels" class="reels"></div><div class="payline" aria-hidden="true"></div></div>
+            <div class="reel-captions"><span>目标鞋款</span><span>尺码</span><span>签位结果</span></div>
+          </section>
+          <section id="doneView" class="view done-view hidden" aria-label="发售签结果" aria-live="polite">
+            <p class="screen-eyebrow">挑战完成</p>
+            <h2 id="screenResultTitle"></h2>
+            <p id="screenResultShoe"></p>
+            <span class="screen-reward">专属好礼 <b id="screenCouponValue"></b></span>
+          </section>
         </div>
+      </div>
 
-        <div class="machine-face">
-          <div class="machine-toolbar">
-            <span class="face-wordmark">SOLE SIGNAL <small>ORIGINAL ARCADE</small></span>
-            <button id="soundBtn" class="sound-btn" type="button" aria-pressed="true">声音 开</button>
-          </div>
+      <div class="selection-deck">
+        <div class="entry-card"><strong id="entryShoeName">银缎丝带</strong><span>EU <b id="entrySize">41</b></span></div>
+        <div class="size-picker">
+          <span class="size-label">选择<br/>尺码<small>EU SIZE</small></span>
+          <div id="sizeChoices" aria-label="选择欧码"><button type="button" aria-pressed="false">34</button><button type="button" aria-pressed="false">35</button><button type="button" aria-pressed="false">36</button><button type="button" aria-pressed="false">37</button><button type="button" aria-pressed="false">38</button><button type="button" aria-pressed="false">39</button><button type="button" aria-pressed="false">40</button><button type="button" aria-pressed="true" class="selected">41</button><button type="button" aria-pressed="false">42</button><button type="button" aria-pressed="false">43</button><button type="button" aria-pressed="false">44</button><button type="button" aria-pressed="false">45</button><button type="button" aria-pressed="false">46</button></div>
+        </div>
+        <section class="journey" aria-label="闯关进度"><div class="journey-head"><span id="journeyLabel"></span><b id="scoreLabel"></b></div><div id="levelMap" class="level-map"></div><div id="charge" class="hidden" aria-hidden="true"><i></i><i></i><i></i></div></section>
+      </div>
 
-          <div class="screen-housing">
-            <div class="screen-trim">
-              <div class="screen-caption"><span id="machineTitle">选择心仪球鞋</span><i aria-hidden="true"></i></div>
-              <div class="machine-screen">
-                <section id="welcomeView" class="view welcome-view" aria-label="选择球鞋">
-                  <div class="drop-head"><h2>今天，想带走哪一双？</h2><span>SELECT YOUR DROP</span></div>
-                  <div id="dropChoices" class="drop-choices">
-                    <button type="button" class="selected" data-shoe="silver-ribbon" aria-pressed="true">
-                      <span class="lane-number">01</span>
-                      <img src="assets/shoes/drop-silver.jpg" alt="银缎丝带" />
-                      <span class="shoe-label"><b>银缎丝带</b><small>选中 <i aria-hidden="true"></i></small></span>
-                    </button>
-                    <button type="button" data-shoe="red-suede" aria-pressed="false">
-                      <span class="lane-number">02</span>
-                      <img src="assets/shoes/drop-red.jpg" alt="赤红麂皮" />
-                      <span class="shoe-label"><b>赤红麂皮</b><small>选中 <i aria-hidden="true"></i></small></span>
-                    </button>
-                    <button type="button" data-shoe="woven-cream" aria-pressed="false">
-                      <span class="lane-number">03</span>
-                      <img src="assets/shoes/drop-woven.jpg" alt="奶油编织" />
-                      <span class="shoe-label"><b>奶油编织</b><small>选中 <i aria-hidden="true"></i></small></span>
-                    </button>
-                    <button type="button" data-shoe="white-navy" aria-pressed="false">
-                      <span class="lane-number">04</span>
-                      <img src="assets/shoes/drop-white-blue.jpg" alt="白蓝复古" />
-                      <span class="shoe-label"><b>白蓝复古</b><small>选中 <i aria-hidden="true"></i></small></span>
-                    </button>
-                  </div>
-                </section>
+      <div class="action-deck">
+        <button id="startBtn" class="arcade-btn" type="button">开始挑战</button>
+        <button id="nextBtn" class="arcade-btn hidden" type="button" disabled>下一关</button>
+        <button id="lever" class="arcade-btn hidden locked" type="button" disabled aria-label="揭晓发售签">揭晓发售签</button>
+        <button id="receiptDetailsBtn" class="arcade-btn hidden" type="button" disabled><span id="receiptActionLabel">查看我的好礼</span></button>
+      </div>
+      <p id="actionNote" class="action-note hidden"></p>
+      <div class="prize-banner"><span id="bannerText">下一双心动，从这里开始。</span></div>
 
-                <section id="questionView" class="view question-view hidden">
-                  <div class="question-meta"><span id="questionLevel">LEVEL 01</span><b id="questionType"></b></div>
-                  <h2 id="questionText"></h2>
-                  <div id="answers" class="answers"></div>
-                  <div id="feedback" class="feedback hidden" role="status">
-                    <div class="feedback-message"><b id="feedbackIcon"></b><span><strong id="feedbackTitle"></strong><small id="feedbackText"></small></span></div>
-                    <button id="nextBtn" type="button">下一关 <span>→</span></button>
-                  </div>
-                </section>
+      <div class="printer">
+        <span class="outlet-label">好礼出口</span>
+        <div class="slot-mouth" aria-label="小票出口"></div>
+        <div id="receiptFeed" class="receipt-feed hidden">
+          <article id="receiptStub" class="hanging-ticket" aria-label="奖励小票">
+            <span class="stub-brand">SOLE SIGNAL</span>
+            <strong id="stubTitle"></strong>
+            <span id="stubShoe"></span>
+            <b id="stubValue"></b>
+            <div class="stub-action"><button type="button" id="stubOpenBtn" class="hidden" disabled>查看好礼 ↗</button></div>
+            <small>THANK YOU FOR PLAYING</small>
+          </article>
+        </div>
+      </div>
+      <div class="machine-status"><strong id="stageDisplay">READY</strong><span id="machineScore">READY</span><span id="statusText" class="sr-only" role="status">CHOOSE YOUR PAIR</span></div>
+      <button id="rulesBtn" class="rules-btn" type="button">活动规则 <span>↗</span></button>
+    </section>
+    <p class="page-footnote">SNEAKER CULTURE. A LITTLE LUCK.</p>
+  </main>
 
-                <section id="unlockView" class="view unlock-view hidden">
-                  <p class="screen-eyebrow">ALL LEVELS CLEARED</p>
-                  <h2>挑战完成</h2>
-                  <div class="unlock-ring"><span id="unlockPercent">0%</span><small>答题正确率</small></div>
-                  <p id="unlockCopy"></p>
-                  <div class="pull-hint">按下机台按钮，揭晓你的发售签 <span>↓</span></div>
-                </section>
-
-                <section id="reelView" class="view reel-view hidden" aria-label="抽签结果">
-                  <div class="reel-window">
-                    <div id="reels" class="reels"></div>
-                    <div class="payline" aria-hidden="true"></div>
-                  </div>
-                  <div class="reel-captions"><span>目标鞋款</span><span>尺码</span><span>签位结果</span></div>
-                  <p class="reel-note">以亮框内的结果为准 · 好礼即将打印</p>
-                </section>
-              </div>
-            </div>
-          </div>
-
-          <div class="selection-deck">
-            <div class="entry-card"><span>你的选择</span><strong id="entryShoeName">银缎丝带</strong><b>EU <span id="entrySize">41</span></b></div>
-            <div class="size-picker">
-              <span class="size-label">选择尺码 <small>EU SIZE</small></span>
-              <div id="sizeChoices" aria-label="选择欧码">
-                <button type="button">34</button><button type="button">35</button><button type="button">36</button>
-                <button type="button">37</button><button type="button">38</button><button type="button">39</button>
-                <button type="button">40</button><button type="button" class="selected" aria-pressed="true">41</button>
-                <button type="button">42</button><button type="button">43</button><button type="button">44</button>
-                <button type="button">45</button><button type="button">46</button>
-              </div>
-            </div>
-            <section class="journey" aria-label="闯关进度">
-              <div class="journey-head"><span id="journeyLabel">选择球鞋与尺码，开启挑战</span><b id="scoreLabel">正确 0 / 3</b></div>
-              <div id="levelMap" class="level-map"></div>
-              <div id="charge" class="charge" aria-hidden="true"><i></i><i></i><i></i></div>
-            </section>
-          </div>
-
-          <div class="action-deck">
-            <div class="deck-vent" aria-hidden="true"></div>
-            <button id="startBtn" class="primary" type="button">确认选择，开始挑战 <span>↗</span></button>
-            <button id="lever" type="button" class="submit-btn locked hidden" disabled aria-label="点击提交发售签并查看结果"><i aria-hidden="true"></i><span>揭晓发售签<small>PRESS TO DRAW</small></span><b>↗</b></button>
-            <p id="actionNote" class="action-note hidden">请在上方屏幕选择答案</p>
-          </div>
-
-          <div class="prize-banner"><span id="bannerText">下一双心动，从这里开始。</span><b>100% 有券</b></div>
-
-          <div class="printer">
-            <div class="printer-status">
-              <div class="console-display"><small>机台状态</small><strong id="stageDisplay">READY</strong></div>
-              <div class="status" role="status"><span id="statusText">CHOOSE YOUR PAIR</span><b id="machineScore">READY</b></div>
-            </div>
-            <div class="paper-outlet">
-              <span class="outlet-label">奖励小票出口 <small>TAKE YOUR RECEIPT</small></span>
-              <div class="slot-mouth" aria-label="小票出口"><i aria-hidden="true"></i></div>
-              <div id="receiptFeed" class="receipt-feed hidden">
-                <section id="couponPanel" class="coupon-panel hidden" aria-label="抽签结果和优惠券">
+  <dialog id="rewardDialog" class="paper-dialog" aria-label="我的奖励小票">
+    <div class="dialog-toolbar"><span>MY REWARD / 我的好礼</span><button type="button" id="closeRewardBtn" aria-label="关闭奖励详情">×</button></div>
+    <div class="dialog-body"><section id="couponPanel" class="coupon-panel hidden" aria-label="抽签结果和优惠券">
                   <div class="ticket-top"><span>SOLE SIGNAL</span><b>REWARD RECEIPT</b></div>
                   <div class="coupon-result">
                     <p class="eyebrow" id="couponRarity">CHALLENGE COMPLETE</p>
@@ -162,33 +125,20 @@
                   </div>
                   <small class="claim-lock">本次奖励已记录。再次挑战仅供娱乐，不会重复发券。</small>
                   <div class="ticket-end"><span>THANK YOU FOR PLAYING</span><i aria-hidden="true"></i></div>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div class="cabinet-base">
-            <details class="side-panel">
-              <summary><span>活动规则 <small>答题赢好礼</small></span><b aria-hidden="true">＋</b></summary>
-              <div class="rules-content">
-                <p>完成三道题即可得券，答对越多券额越高。中签结果不影响券额。</p>
-                <div id="tiers" class="tiers">
-                  <div data-min="0"><span>0 题</span><strong>¥5</strong></div>
-                  <div data-min="1"><span>1 题</span><strong>¥8</strong></div>
-                  <div data-min="2"><span>2 题</span><strong>¥12</strong></div>
-                  <div data-min="3"><span>3 题</span><strong>¥20</strong></div>
-                </div>
-                <p id="claimNote" class="fineprint">当前为活动体验，购买资格及券码需经活动方确认后使用。</p>
-              </div>
-            </details>
-            <div class="base-trim" aria-hidden="true"><span>SS–001<br/>EST. 2026</span><i class="speaker"></i><b>PLAY<br/>WITH SOLE.</b></div>
-          </div>
-        </div>
-        <div class="machine-feet" aria-hidden="true"><i></i><i></i></div>
-      </section>
-      <p class="page-footnote">SNEAKER CULTURE. A LITTLE LUCK.</p>
-    </main>
-    <div id="toast" class="toast" role="status">券码已复制</div>
-    <footer><span>SOLE SIGNAL © 2026</span><span>CAMPAIGN PREVIEW</span></footer>
-    <script src="app.js?v=arcade01"></script>
-  </body>
+                </section></div>
+  </dialog>
+  <dialog id="rulesDialog" class="paper-dialog rules-dialog" aria-label="活动规则">
+    <div class="dialog-toolbar"><span>HOW TO PLAY / 活动规则</span><button type="button" id="closeRulesBtn" aria-label="关闭活动规则">×</button></div>
+    <div class="dialog-body rules-content">
+      <h2>选一双，闯三关，领好礼。</h2>
+      <p>选择鞋款与欧码，完成三道球鞋知识题。答对越多，券额越高；中签结果不会改变券额。</p>
+      <div id="tiers" class="tiers"><div data-min="0"><span>0 题</span><strong>¥5</strong></div><div data-min="1"><span>1 题</span><strong>¥8</strong></div><div data-min="2"><span>2 题</span><strong>¥12</strong></div><div data-min="3"><span>3 题</span><strong>¥20</strong></div></div>
+      <p>小票会从机身下方打印出来，点击小票或红色按钮，即可查看券码；中签后还可查看购买资格编号。</p>
+      <p id="claimNote" class="fineprint">当前为活动体验，购买资格及券码需经活动方确认后使用。</p>
+    </div>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <footer><span>SOLE SIGNAL © 2026</span><span>CAMPAIGN PREVIEW</span></footer>
+  <script src="app.js?v=cabinet02"></script>
+</body>
 </html>

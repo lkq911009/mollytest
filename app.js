@@ -2,7 +2,7 @@ const questions = [
   {
     type: "MATERIAL / 材质关",
     shoe: "cream",
-    q: "日常白色皮革球鞋，最适合用哪种方式清洁？",
+    q: "皮革球鞋应该怎么清洁？",
     answers: ["直接放进洗衣机强洗", "软布蘸中性清洁剂轻擦", "用热水长时间浸泡"],
     correct: 1,
     why: "中性清洁剂配合软布更温和，可以减少皮面开裂和变形。",
@@ -10,7 +10,7 @@ const questions = [
   {
     type: "FIT / 尺码关",
     shoe: "silver",
-    q: "下午试穿球鞋通常比清晨更合理，为什么？",
+    q: "为什么建议下午试穿球鞋？",
     answers: ["下午脚部会轻微膨胀", "下午鞋底会自动变软", "下午鞋码会变小"],
     correct: 0,
     why: "活动一天后脚部通常会轻微膨胀，此时试穿更接近日常真实状态。",
@@ -18,7 +18,7 @@ const questions = [
   {
     type: "ROTATION / 轮换关",
     shoe: "olive",
-    q: "为什么不建议连续很多天只穿同一双运动鞋？",
+    q: "为什么建议球鞋轮换着穿？",
     answers: ["颜色会自动变深", "鞋底必须每天换方向", "需要时间散湿并恢复缓震"],
     correct: 2,
     why: "轮换穿着能给鞋内散湿和中底材料恢复的时间，也更利于延长寿命。",
@@ -51,7 +51,11 @@ let timers = [],
   drawResult = null,
   entertainmentMode = false;
 let audioContext;
-let stopReceiptFollow = () => {};
+let memoryClaim = null,
+  claimPersisted = false,
+  claimStorageUnavailable = false,
+  toastTimer;
+const dialogOpeners = new WeakMap();
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 function later(callback, delay) {
@@ -60,9 +64,56 @@ function later(callback, delay) {
   return timer;
 }
 
-try {
-  entertainmentMode = Boolean(localStorage.getItem("soleSignalClaim"));
-} catch {}
+function isValidClaim(claim) {
+  return Boolean(
+    claim && typeof claim === "object" && !Array.isArray(claim) &&
+    Number.isInteger(claim.score) && claim.score >= 0 && claim.score < couponValues.length &&
+    claim.value === couponValues[claim.score] &&
+    typeof claim.code === "string" && /^[A-Z0-9-]{6,80}$/.test(claim.code) &&
+    drops.some((drop) => drop.id === claim.shoe) && sizes.includes(claim.size) &&
+    typeof claim.drawWon === "boolean" &&
+    (claim.accessCode === undefined || (typeof claim.accessCode === "string" && claim.accessCode.length <= 80)) &&
+    typeof claim.date === "string" && Number.isFinite(Date.parse(claim.date)),
+  );
+}
+function readStoredClaim() {
+  try {
+    const claim = JSON.parse(localStorage.getItem("soleSignalClaim"));
+    if (isValidClaim(claim)) {
+      claimPersisted = true;
+      return claim;
+    }
+  } catch (error) {
+    if (!(error instanceof SyntaxError)) claimStorageUnavailable = true;
+  }
+  return null;
+}
+function rememberClaim(claim) {
+  memoryClaim = claim;
+  try {
+    localStorage.setItem("soleSignalClaim", JSON.stringify(claim));
+    claimPersisted = true;
+    claimStorageUnavailable = false;
+  } catch {
+    claimPersisted = false;
+    claimStorageUnavailable = true;
+  }
+}
+function updateClaimNotice() {
+  const temporary = memoryClaim && !claimPersisted;
+  if (temporary) {
+    $("#claimNote").textContent = "本次奖励仅在当前页面保留，刷新或关闭后可能丢失。再次挑战不重复发券，请先复制编号。";
+  } else if (entertainmentMode) {
+    $("#claimNote").textContent = "再次挑战仅供娱乐，不重复发券。购买资格及券码需经活动方确认后使用。";
+  } else if (claimStorageUnavailable) {
+    $("#claimNote").textContent = "当前浏览器无法保存领取记录，完成后请及时复制编号。购买资格及券码需经活动方确认后使用。";
+  }
+  $(".claim-lock").textContent = temporary
+    ? "仅在当前页面保留，请先复制编号；再次挑战不会重复发券。"
+    : "首次奖励已记录。再次挑战仅供娱乐，不会重复发券。";
+}
+memoryClaim = readStoredClaim();
+entertainmentMode = Boolean(memoryClaim);
 
 function shoePath(id) {
   return `assets/shoes/${id}.png`;
@@ -96,13 +147,21 @@ function updateEntry() {
 function syncMachine() {
   machine.dataset.phase = phase;
   $("#startBtn").classList.toggle("hidden", phase !== "intro");
+  $("#startBtn").disabled = phase !== "intro";
+  $("#nextBtn").classList.toggle("hidden", phase !== "quiz");
+  $("#nextBtn").disabled = phase !== "quiz" || answers[step] === undefined;
   lever.classList.toggle("hidden", !["unlock", "reel"].includes(phase));
   lever.disabled = phase !== "unlock";
   lever.classList.toggle("locked", lever.disabled);
+  $("#receiptDetailsBtn").classList.toggle("hidden", !["printing", "done"].includes(phase));
+  $("#receiptDetailsBtn").disabled = phase !== "done";
+  $("#receiptActionLabel").textContent = phase === "printing" ? "正在出票" : "查看好礼";
+  $("#stubOpenBtn").disabled = phase !== "done";
+  $("#stubOpenBtn").classList.toggle("hidden", phase !== "done");
   $("#actionNote").classList.toggle("hidden", !["quiz", "printing", "done"].includes(phase));
   $("#actionNote").textContent = phase === "quiz"
-    ? "请在上方屏幕选择答案 ↑"
-    : phase === "printing" ? "正在出纸，请稍候 ↓" : "好礼已送达，请收好你的小票 ↓";
+    ? answers[step] === undefined ? "请在上方屏幕选择答案 ↑" : "看完解析，按下按钮继续"
+    : phase === "printing" ? "好礼正在出纸，请稍候 ↓" : "小票已送达，点击查看好礼";
   $("#bannerText").textContent = {
     intro: "下一双心动，从这里开始。",
     quiz: "多答对一题，好礼升一级。",
@@ -170,6 +229,7 @@ function renderMap() {
 
 function start() {
   if (phase !== "intro") return;
+  clearSpin();
   phase = "quiz";
   step = 0;
   score = 0;
@@ -187,16 +247,19 @@ function start() {
 function renderQuestion() {
   const q = questions[step];
   showView("#questionView");
+  $("#questionView").classList.remove("has-feedback");
   $("#questionLevel").textContent = `LEVEL 0${step + 1} / 03`;
   $("#questionType").textContent = q.type;
   $("#questionText").textContent = q.q;
   $("#answers").innerHTML = q.answers
     .map(
       (a, i) =>
-        `<button data-i="${i}"><b>${String.fromCharCode(65 + i)}</b><span>${a}</span><i>↗</i></button>`,
+        `<button type="button" data-i="${i}"><b>${String.fromCharCode(65 + i)}</b><span>${a}</span><i>↗</i></button>`,
     )
     .join("");
   $("#feedback").classList.add("hidden");
+  $("#nextBtn").innerHTML = step === questions.length - 1
+    ? "完成挑战 <span>→</span>" : "下一关 <span>→</span>";
   $("#statusText").textContent = `LEVEL 0${step + 1} · CHOOSE ONE`;
   $("#machineScore").textContent = `${score} CORRECT`;
   $("#stageDisplay").textContent = `LEVEL 0${step + 1}`;
@@ -225,6 +288,7 @@ function answer(choice) {
   $("#nextBtn").innerHTML =
     step === 2 ? "完成挑战 <span>→</span>" : "下一关 <span>→</span>";
   $("#feedback").classList.remove("hidden");
+  $("#questionView").classList.add("has-feedback");
   $("#statusText").textContent = ok
     ? "CORRECT · COUPON UPGRADED"
     : "KEEP GOING · REWARD GUARANTEED";
@@ -246,7 +310,7 @@ function unlock() {
     value = couponFor(score);
   $("#unlockPercent").textContent = `${pct}%`;
   $("#unlockCopy").textContent =
-    `已锁定 ¥${value} 优惠券。接下来揭晓 ${drops[selectedDrop].name} · ${sizes[selectedSize]} 码的发售签，中签与否都不影响券额。`;
+    `¥${value} 优惠券已锁定，中签与否都能领。`;
   $("#machineTitle").textContent = "挑战完成 · 好礼已锁定";
   $("#statusText").textContent = "ENTRY READY · SUBMIT THE DRAW";
   $("#machineScore").textContent = `¥${value} LOCKED`;
@@ -284,7 +348,6 @@ function renderReels(indices = [0, 3, 0]) {
     .join("");
 }
 function clearSpin() {
-  stopReceiptFollow();
   timers.forEach(clearInterval);
   stops.forEach(clearTimeout);
   timers = [];
@@ -348,19 +411,16 @@ function showCoupon() {
     },
     resultDrop = drops[result.dropIndex],
     resultSize = sizes[result.sizeIndex],
-    value = couponFor(score),
-    pct = accuracyFor(score);
-  let saved = null;
-  try {
-    saved = JSON.parse(localStorage.getItem("soleSignalClaim"));
-  } catch {}
-  if (saved) entertainmentMode = true;
+    value = couponFor(score);
+  const saved = readStoredClaim() || memoryClaim;
+  if (saved) memoryClaim = saved;
+  const replaying = entertainmentMode || Boolean(saved);
   const code = `SOLE${value}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
   const accessCode = result.won
     ? `PASS-${Date.now().toString(36).slice(-6).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`
     : "";
-  if (!saved && !entertainmentMode) {
-    saved = {
+  if (!replaying) {
+    rememberClaim({
       value,
       code,
       score,
@@ -369,14 +429,13 @@ function showCoupon() {
       drawWon: result.won,
       accessCode,
       date: new Date().toISOString(),
-    };
-    try { localStorage.setItem("soleSignalClaim", JSON.stringify(saved)); } catch {}
+    });
   }
-  $("#couponValue").textContent = entertainmentMode ? value : saved.value;
-  $("#couponCode").textContent = entertainmentMode
+  $("#couponValue").textContent = value;
+  $("#couponCode").textContent = replaying
     ? `PLAY-${value}-${code.slice(-5)}`
-    : saved.code;
-  const modeCopy = entertainmentMode ? " · 娱乐模式不重复发券" : "";
+    : code;
+  const modeCopy = replaying ? " · 娱乐模式不重复发券" : "";
   $("#resultSummary").textContent = result.won
     ? `${resultDrop.name} ${resultSize} 码恭喜中签 · ¥${value} 优惠券同时到账${modeCopy}`
     : `本次未获得购买资格 · ¥${value} 保底优惠券已经到账${modeCopy}`;
@@ -394,11 +453,23 @@ function showCoupon() {
   $("#accessBtn").setAttribute("aria-expanded", "false");
   $("#purchaseAccess").classList.add("hidden");
   if (result.won) {
-    $("#accessCode").textContent = entertainmentMode
+    $("#accessCode").textContent = replaying
       ? `PREVIEW-${accessCode.slice(-11)}`
-      : saved.accessCode || accessCode;
+      : accessCode;
     $("#accessProduct").textContent = `${resultDrop.name} · ${resultSize} 码`;
+  } else {
+    $("#accessCode").textContent = "";
+    $("#accessProduct").textContent = "";
   }
+  const resultTitle = result.won ? "恭喜中签！" : "好礼已到账";
+  const resultShoe = `${resultDrop.name} · ${resultSize} 码`;
+  $("#stubTitle").textContent = resultTitle;
+  $("#stubShoe").textContent = resultShoe;
+  $("#stubValue").textContent = `¥${value}`;
+  $("#screenResultTitle").textContent = resultTitle;
+  $("#screenResultShoe").textContent = resultShoe;
+  $("#screenCouponValue").textContent = `¥${value}`;
+  showView("#doneView");
   $("#statusText").textContent = "PRINTING REWARD RECEIPT...";
   $("#machineTitle").textContent = "正在打印奖励小票";
   $("#stageDisplay").textContent = "PRINTING";
@@ -406,36 +477,30 @@ function showCoupon() {
   entertainmentMode = true;
   const panel = $("#couponPanel");
   const feed = $("#receiptFeed");
-  feed.classList.remove("hidden", "complete");
-  feed.style.height = "0px";
+  const stub = $("#receiptStub");
+  feed.classList.remove("hidden", "printing", "printed", "complete");
+  stub.classList.remove("printing", "printed");
   panel.classList.remove("hidden", "printing", "printed");
+  updateClaimNotice();
   renderMap();
-  // Move to the outlet before feeding the paper, so the motion stays in view.
-  $(".slot-mouth").scrollIntoView({ behavior: reducedMotion.matches ? "instant" : "smooth", block: "start" });
+  // Reveal the hanging ticket inside the fixed cabinet without changing page height.
+  $(".slot-mouth").scrollIntoView({ behavior: reducedMotion.matches ? "instant" : "smooth", block: "nearest" });
   later(() => {
-    feed.style.height = `${panel.offsetHeight}px`;
-    panel.classList.add("printing");
-    // Follow only the emerging edge; touch or wheel input immediately takes control.
-    const follow = setInterval(() => {
-      const overflow = feed.getBoundingClientRect().bottom - innerHeight + 36;
-      if (overflow > 0) window.scrollBy({ top: overflow, behavior: "instant" });
-    }, 100);
-    stopReceiptFollow = () => {
-      clearInterval(follow);
-      ["wheel", "touchstart", "pointerdown", "keydown"].forEach((event) => window.removeEventListener(event, stopReceiptFollow));
-    };
-    ["wheel", "touchstart", "pointerdown", "keydown"].forEach((event) => window.addEventListener(event, stopReceiptFollow, { passive: true }));
+    feed.classList.add("printing");
+    stub.classList.add("printing");
     later(() => {
-      stopReceiptFollow();
       phase = "done";
       panel.classList.add("printed");
-      feed.classList.add("complete");
+      feed.classList.remove("printing");
+      feed.classList.add("printed");
+      stub.classList.remove("printing");
+      stub.classList.add("printed");
       $("#statusText").textContent = "RECEIPT READY · COUPON SECURED";
       $("#machineTitle").textContent = "小票打印完成";
       $("#stageDisplay").textContent = "CLEARED";
       renderMap();
-    }, reducedMotion.matches ? 50 : 2650);
-  }, reducedMotion.matches ? 30 : 450);
+    }, reducedMotion.matches ? 50 : 2200);
+  }, 30);
   beep(score === 3 ? 760 : 560, 0.35);
 }
 
@@ -465,39 +530,80 @@ document.querySelectorAll("#sizeChoices button").forEach((button, index) => {
   };
 });
 $("#replayBtn").onclick = () => {
+  if (phase !== "done") return;
+  closeDialog("#rewardDialog", false);
+  closeDialog("#rulesDialog", false);
   clearSpin();
   spinning = false;
-  try { entertainmentMode ||= Boolean(localStorage.getItem("soleSignalClaim")); } catch {}
-  $("#claimNote").textContent = entertainmentMode
-    ? "再次挑战仅供娱乐，不重复发券。购买资格及券码需经活动方确认后使用。"
-    : $("#claimNote").textContent;
+  memoryClaim ||= readStoredClaim();
+  entertainmentMode ||= Boolean(memoryClaim);
+  updateClaimNotice();
   phase = "intro";
   score = 0;
   step = 0;
   answers = [];
   drawResult = null;
+  drawWon = false;
   machine.classList.remove("reward");
   lever.classList.add("locked");
+  lever.classList.remove("pulled");
   $("#couponPanel").classList.add("hidden");
   $("#couponPanel").classList.remove("printing", "printed");
   $("#receiptFeed").classList.add("hidden");
-  $("#receiptFeed").classList.remove("complete");
-  $("#receiptFeed").style.height = "0px";
+  $("#receiptFeed").classList.remove("printing", "printed", "complete");
+  $("#receiptStub").classList.remove("printing", "printed");
+  $("#stubTitle").textContent = "";
+  $("#stubShoe").textContent = "";
+  $("#stubValue").textContent = "";
   $("#accessBtn").classList.add("hidden");
+  $("#accessBtn").setAttribute("aria-expanded", "false");
   $("#purchaseAccess").classList.add("hidden");
+  $("#questionView").classList.remove("has-feedback");
   $("#machineTitle").textContent = "选择心仪球鞋";
   $("#statusText").textContent = "SELECT A DROP · CHOOSE YOUR SIZE";
   $("#machineScore").textContent = "READY";
   $("#stageDisplay").textContent = "ENTRY";
   showView("#welcomeView");
   renderMap();
+  $("#startBtn").focus({ preventScroll: true });
   machine.scrollIntoView({ behavior: reducedMotion.matches ? "instant" : "smooth", block: "start" });
 };
+
+function openDialog(selector, opener) {
+  if (selector === "#rewardDialog" && phase !== "done") return;
+  const dialog = $(selector);
+  if (dialog.open) return;
+  dialogOpeners.set(dialog, opener || document.activeElement);
+  dialog.showModal();
+}
+function closeDialog(selector, restoreFocus = true) {
+  const dialog = $(selector);
+  if (!restoreFocus) dialogOpeners.delete(dialog);
+  if (dialog.open) dialog.close();
+}
+["#rewardDialog", "#rulesDialog"].forEach((selector) => {
+  $(selector).addEventListener("close", () => {
+    const opener = dialogOpeners.get($(selector));
+    dialogOpeners.delete($(selector));
+    if (opener?.isConnected && !opener.disabled && opener.getClientRects().length) {
+      opener.focus({ preventScroll: true });
+    }
+  });
+});
+$("#stubOpenBtn").onclick = (event) => openDialog("#rewardDialog", event.currentTarget);
+$("#receiptDetailsBtn").onclick = (event) => openDialog("#rewardDialog", event.currentTarget);
+$("#rulesBtn").onclick = (event) => openDialog("#rulesDialog", event.currentTarget);
+$("#closeRewardBtn").onclick = () => closeDialog("#rewardDialog");
+$("#closeRulesBtn").onclick = () => closeDialog("#rulesDialog");
+
 function showToast(message) {
   const toast = $("#toast");
+  const host = document.querySelector("dialog[open]") || document.body;
+  if (toast.parentElement !== host) host.appendChild(toast);
+  clearTimeout(toastTimer);
   toast.textContent = message;
   toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 1600);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 1600);
 }
 async function copyText(selector, message) {
   try {
@@ -507,27 +613,29 @@ async function copyText(selector, message) {
     showToast("复制未成功，请长按编号手动复制");
   }
 }
-$("#copyBtn").onclick = () => copyText("#couponCode", "券码已复制");
+$("#copyBtn").onclick = () => {
+  if (phase === "done") copyText("#couponCode", "券码已复制");
+};
 $("#accessBtn").onclick = () => {
+  if (phase !== "done" || !drawResult?.won) return;
   const pass = $("#purchaseAccess");
   const expanded = pass.classList.contains("hidden");
   pass.classList.toggle("hidden", !expanded);
   $("#accessBtn").setAttribute("aria-expanded", String(expanded));
   if (expanded) pass.scrollIntoView({ behavior: reducedMotion.matches ? "instant" : "smooth", block: "center" });
 };
-$("#copyAccessBtn").onclick = () => copyText("#accessCode", "资格编号已复制");
+$("#copyAccessBtn").onclick = () => {
+  if (phase === "done" && drawResult?.won) copyText("#accessCode", "资格编号已复制");
+};
 
-if (entertainmentMode) {
-  $("#claimNote").textContent =
-    "再次挑战仅供娱乐，不重复发券。购买资格及券码需经活动方确认后使用。";
-}
+updateClaimNotice();
 $("#soundBtn").onclick = () => {
   soundOn = !soundOn;
   $("#soundBtn").textContent = soundOn ? "声音 开" : "声音 关";
   $("#soundBtn").setAttribute("aria-pressed", String(soundOn));
 };
 document.addEventListener("keydown", (e) => {
-  if (e.code === "Space" && !e.repeat && phase === "unlock" && !e.target.closest("button, a, summary, input, textarea, select")) {
+  if (e.code === "Space" && !e.repeat && phase === "unlock" && !document.querySelector("dialog[open]") && !e.target.closest("button, a, summary, input, textarea, select")) {
     e.preventDefault();
     spin();
   }
