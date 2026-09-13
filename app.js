@@ -41,8 +41,7 @@ let step = 0,
   score = 0,
   answers = [],
   phase = "intro",
-  spinning = false,
-  soundOn = true;
+  spinning = false;
 let timers = [],
   stops = [],
   selectedDrop = 0,
@@ -50,7 +49,6 @@ let timers = [],
   drawWon = false,
   drawResult = null,
   entertainmentMode = false;
-let audioContext;
 let memoryClaim = null,
   claimPersisted = false,
   claimStorageUnavailable = false,
@@ -175,24 +173,6 @@ function showView(id) {
   document.querySelectorAll(".view").forEach((v) => v.classList.add("hidden"));
   $(id).classList.remove("hidden");
 }
-function beep(freq = 220, duration = 0.07) {
-  if (!soundOn) return;
-  try {
-    const ctx = audioContext ||= new (window.AudioContext || window.webkitAudioContext)(),
-      osc = ctx.createOscillator(),
-      gain = ctx.createGain();
-    if (ctx.state === "suspended") ctx.resume().catch(() => {});
-    osc.frequency.value = freq;
-    gain.gain.setValueAtTime(0.04, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + duration);
-    osc.onended = () => { osc.disconnect(); gain.disconnect(); };
-  } catch {}
-}
-
 function renderMap() {
   $("#levelMap").innerHTML = questions
     .map((_, i) => {
@@ -293,7 +273,6 @@ function answer(choice) {
     ? "CORRECT · COUPON UPGRADED"
     : "KEEP GOING · REWARD GUARANTEED";
   $("#machineScore").textContent = `${score} CORRECT`;
-  beep(ok ? 520 : 150, 0.13);
   renderMap();
 }
 function next() {
@@ -317,7 +296,6 @@ function unlock() {
   $("#stageDisplay").textContent = "REVEAL";
   lever.classList.remove("locked");
   renderMap();
-  beep(620, 0.25);
 }
 
 function reelCell(col, index) {
@@ -379,7 +357,6 @@ function spin() {
       () => {
         current[col]++;
         setReel(col, current[col]);
-        beep(100 + col * 15, 0.025);
       },
       78 + col * 13,
     );
@@ -392,7 +369,6 @@ function stopReel(col, target) {
   const reel = document.querySelector(`[data-reel="${col}"]`);
   reel.classList.remove("spinning");
   setReel(col, target);
-  beep(300 + col * 100, 0.14);
   if (col === 2) {
     $("#statusText").textContent = "RESULT LOCKED · PRINTING NEXT";
     later(showCoupon, 850);
@@ -501,7 +477,6 @@ function showCoupon() {
       renderMap();
     }, reducedMotion.matches ? 50 : 2200);
   }, 30);
-  beep(score === 3 ? 760 : 560, 0.35);
 }
 
 $("#startBtn").onclick = start;
@@ -515,7 +490,6 @@ document.querySelectorAll("#dropChoices button").forEach((button, index) => {
       .querySelectorAll("#dropChoices button")
       .forEach((item) => item.classList.toggle("selected", item === button));
     updateEntry();
-    beep(360, 0.08);
   };
 });
 document.querySelectorAll("#sizeChoices button").forEach((button, index) => {
@@ -526,7 +500,6 @@ document.querySelectorAll("#sizeChoices button").forEach((button, index) => {
       .querySelectorAll("#sizeChoices button")
       .forEach((item) => item.classList.toggle("selected", item === button));
     updateEntry();
-    beep(410, 0.06);
   };
 });
 $("#replayBtn").onclick = () => {
@@ -629,11 +602,6 @@ $("#copyAccessBtn").onclick = () => {
 };
 
 updateClaimNotice();
-$("#soundBtn").onclick = () => {
-  soundOn = !soundOn;
-  $("#soundBtn").textContent = soundOn ? "声音 开" : "声音 关";
-  $("#soundBtn").setAttribute("aria-pressed", String(soundOn));
-};
 document.addEventListener("keydown", (e) => {
   if (e.code === "Space" && !e.repeat && phase === "unlock" && !document.querySelector("dialog[open]") && !e.target.closest("button, a, summary, input, textarea, select")) {
     e.preventDefault();
